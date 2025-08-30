@@ -339,6 +339,10 @@ class ParameterValidator:
         """Get total number of parameters"""
         return len(self._param_names)
     
+    def is_valid_parameter(self, parameter_name: str) -> bool:
+        """Check if a parameter exists in the parameter database."""
+        return parameter_name.upper() in self._param_names
+    
     @property
     def available_parameters(self) -> Set[str]:
         """Get set of all available parameter names"""

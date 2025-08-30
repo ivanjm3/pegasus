@@ -142,7 +142,7 @@ class BackendOrchestrator:
             errors.append("Invalid LLM response structure")
         
         # Additional semantic validation
-        if llm_response.parameter_name and not self._validator.is_parameter_valid(llm_response.parameter_name):
+        if llm_response.parameter_name and not self._validator.is_valid_parameter(llm_response.parameter_name):
             errors.append(f"Unknown parameter: {llm_response.parameter_name}")
         
         if llm_response.intent == 'change' and llm_response.parameter_value is None:
