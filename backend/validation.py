@@ -5,6 +5,7 @@ from enum import Enum
 from functools import lru_cache
 import logging
 import re
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +16,7 @@ class ParameterType(Enum):
     BOOL = "BOOL"
     STRING = "STRING"
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True)
 class ValidationResult:
     """Immutable validation result"""
     valid: bool
@@ -50,6 +51,11 @@ class ParameterValidator:
     def _load_and_index_params(self, params_path: str) -> Dict[str, Dict[str, Any]]:
         """Load and create optimized parameter index - handle nested 'parameters' key"""
         try:
+            # Handle relative paths
+            if not os.path.isabs(params_path):
+                params_path = os.path.join(os.path.dirname(__file__), '..', params_path)
+                params_path = os.path.abspath(params_path)
+            
             with open(params_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
@@ -125,7 +131,7 @@ class ParameterValidator:
         
         # Check if parameter exists
         if param_name_upper not in self._param_dict:
-            suggestions = self._get_similar_parameters(param_name_upper)
+            suggestions = self.get_similar_parameters(param_name_upper)
             suggestion_msg = f" Did you mean: {', '.join(suggestions[:3])}?" if suggestions else ""
             return ValidationResult(
                 False, 
@@ -270,7 +276,7 @@ class ParameterValidator:
         """Convert value to string"""
         return str(value)
     
-    def _get_similar_parameters(self, param_name: str, max_suggestions: int = 5) -> List[str]:
+    def get_similar_parameters(self, param_name: str, max_suggestions: int = 5) -> List[str]:
         """Find similar parameter names using simple string matching"""
         suggestions = []
         param_name_lower = param_name.lower()
