@@ -30,10 +30,20 @@ class LLMHandler:
     
     @staticmethod
     def _load_px4_params(params_path: str) -> List[Dict[str, Any]]:
-        """Load PX4 parameters with error handling"""
+        """Load PX4 parameters with error handling - handle nested 'parameters' key"""
         try:
             with open(params_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+            
+            # Handle both formats: list of params or {"parameters": [...]}
+            if isinstance(data, dict) and 'parameters' in data:
+                return data['parameters']
+            elif isinstance(data, list):
+                return data
+            else:
+                logger.error(f"Invalid PX4 parameters format in {params_path}")
+                return []
+                
         except (FileNotFoundError, json.JSONDecodeError) as e:
             logger.error(f"Failed to load PX4 parameters from {params_path}: {e}")
             return []

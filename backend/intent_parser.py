@@ -1,6 +1,6 @@
 import re
 import json
-from typing import Dict, Any, Optional, Set, Pattern
+from typing import Dict, Any, Optional, Set, Pattern, List
 from enum import Enum
 from functools import lru_cache
 import logging
@@ -57,11 +57,21 @@ class IntentParser:
         ])
     
     @staticmethod
-    def _load_px4_params(params_path: str) -> list:
-        """Load PX4 parameters with error handling"""
+    def _load_px4_params(params_path: str) -> List[Dict[str, Any]]:
+        """Load PX4 parameters with error handling - handle nested 'parameters' key"""
         try:
             with open(params_path, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+            
+            # Handle both formats: list of params or {"parameters": [...]}
+            if isinstance(data, dict) and 'parameters' in data:
+                return data['parameters']
+            elif isinstance(data, list):
+                return data
+            else:
+                logger.error(f"Invalid PX4 parameters format in {params_path}")
+                return []
+                
         except (FileNotFoundError, json.JSONDecodeError, PermissionError) as e:
             logger.error(f"Failed to load PX4 parameters from {params_path}: {e}")
             return []
@@ -192,7 +202,7 @@ class IntentParser:
         
         return True
     
-    def get_parameter_suggestions(self, partial_name: str, max_suggestions: int = 5) -> list:
+    def get_parameter_suggestions(self, partial_name: str, max_suggestions: int = 5) -> List[str]:
         """Get parameter name suggestions for partial matches"""
         if not partial_name:
             return []

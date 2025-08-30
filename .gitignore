@@ -1,2 +1,4 @@
 settings.yaml
 .venv/
+test_backend.py
+__pycache__/

@@ -48,10 +48,19 @@ class ParameterValidator:
         }
     
     def _load_and_index_params(self, params_path: str) -> Dict[str, Dict[str, Any]]:
-        """Load and create optimized parameter index"""
+        """Load and create optimized parameter index - handle nested 'parameters' key"""
         try:
             with open(params_path, 'r', encoding='utf-8') as f:
-                px4_params = json.load(f)
+                data = json.load(f)
+            
+            # Handle both formats: list of params or {"parameters": [...]}
+            if isinstance(data, dict) and 'parameters' in data:
+                px4_params = data['parameters']
+            elif isinstance(data, list):
+                px4_params = data
+            else:
+                logger.error(f"Invalid PX4 parameters format in {params_path}")
+                return {}
             
             if not isinstance(px4_params, list):
                 raise ValueError("Expected list of parameters")
@@ -80,14 +89,17 @@ class ParameterValidator:
         normalized = {
             'name': param['name'].upper(),
             'type': param.get('type', 'FLOAT').upper(),
-            'description': param.get('description', '').strip(),
-            'unit': param.get('unit', '').strip(),
+            'description': param.get('shortDesc', param.get('description', '')).strip(),
+            'unit': param.get('units', param.get('unit', '')).strip(),
             'default': param.get('default'),
             'min': param.get('min'),
             'max': param.get('max'),
             'enum_values': param.get('enum_values', []),
             'increment': param.get('increment'),
-            'decimal_places': param.get('decimal_places', 2)
+            'decimal_places': param.get('decimal_places', 2),
+            'long_description': param.get('longDesc', ''),
+            'category': param.get('category', ''),
+            'group': param.get('group', '')
         }
         
         # Convert min/max to appropriate types
