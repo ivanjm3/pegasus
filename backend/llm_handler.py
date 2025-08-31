@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from functools import lru_cache
 import re
 import os
+from pathlib import Path
 
 from openai import OpenAI
 
@@ -26,55 +27,87 @@ class LLMHandler:
         self.client = OpenAI(api_key=api_key)
         self.model = model
         self._px4_params = self._load_px4_params(px4_params_path)
-        self._param_names = frozenset(param['name'] for param in self._px4_params)
+        self._param_names = self._extract_param_names()
         self._system_prompt = self._build_system_prompt()
+        logger.info(f"Loaded {len(self._param_names)} parameters")
     
-    @staticmethod
-    def _load_px4_params(params_path: str) -> List[Dict[str, Any]]:
-        """Load PX4 parameters with error handling"""
+    def _load_px4_params(self, params_path: str) -> List[Dict[str, Any]]:
+        """Load PX4 parameters with better error handling and path resolution"""
         try:
+            # Resolve absolute path
             if not os.path.isabs(params_path):
-                params_path = os.path.join(os.path.dirname(__file__), '..', params_path)
-                params_path = os.path.abspath(params_path)
+                base_dir = Path(__file__).parent.parent
+                params_path = str(base_dir / params_path)
+            
+            logger.info(f"Loading parameters from: {params_path}")
+            
+            if not os.path.exists(params_path):
+                logger.error(f"Parameters file not found: {params_path}")
+                return []
             
             with open(params_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
             
+            # Handle different JSON structures
             if isinstance(data, dict) and 'parameters' in data:
-                return data['parameters']
+                params = data['parameters']
             elif isinstance(data, list):
-                return data
+                params = data
             else:
                 logger.error(f"Invalid PX4 parameters format in {params_path}")
                 return []
+            
+            logger.info(f"Successfully loaded {len(params)} parameters")
+            return params
                 
-        except (FileNotFoundError, json.JSONDecodeError) as e:
+        except (FileNotFoundError, json.JSONDecodeError, UnicodeDecodeError) as e:
             logger.error(f"Failed to load PX4 parameters from {params_path}: {e}")
             return []
+    
+    def _extract_param_names(self) -> frozenset:
+        """Extract all parameter names from loaded parameters"""
+        param_names = set()
+        for param in self._px4_params:
+            name = param.get('name')
+            if name and isinstance(name, str):
+                param_names.add(name)
+        
+        logger.info(f"Extracted {len(param_names)} unique parameter names")
+        return frozenset(param_names)
     
     def _build_system_prompt(self) -> str:
         """Build comprehensive system prompt for natural conversation"""
         if not self._px4_params:
             return self._get_fallback_system_prompt()
         
-        param_details = []
-        for param in self._px4_params[:50]:
+        # Create a sample of parameters for context
+        param_samples = []
+        for param in self._px4_params[:100]:  # Increased sample size
             name = param.get('name', '')
-            desc = param.get('shortDesc', param.get('description', ''))[:100]
-            param_details.append(f"{name}: {desc}")
+            desc = param.get('shortDesc', param.get('longDesc', param.get('description', '')))[:120]
+            if name and desc:
+                param_samples.append(f"{name}: {desc}")
         
-        param_context = '\n'.join(param_details)
+        param_context = '\n'.join(param_samples[:50])  # Show first 50
         
         return f"""You are a PX4 drone parameter expert assistant. Handle natural conversations about drone parameters.
 
-AVAILABLE PARAMETERS (sample):
+AVAILABLE PARAMETERS (sample of {len(self._param_names)} total):
 {param_context}
+
+COMMON PARAMETER CATEGORIES:
+- RC parameters (RC_*): Remote control settings
+- MC parameters (MC_*): Multicopter settings  
+- FW parameters (FW_*): Fixed-wing settings
+- EKF2 parameters (EKF2_*): Estimation settings
+- COM parameters (COM_*): Commander settings
+- BAT parameters (BAT_*): Battery settings
 
 CAPABILITIES:
 - Explain what parameters do and how they affect flight
 - Help users change parameter values with validation
 - Handle conversational queries like "the drone feels sluggish" or "increase responsiveness"
-- Map colloquial terms to actual parameter names
+- Map colloquial terms to actual parameter names (e.g., "roll rate" → "MC_ROLLRATE_P")
 - Provide parameter suggestions for partial/unclear references
 
 RESPONSE FORMAT (always JSON):
@@ -90,9 +123,9 @@ RESPONSE FORMAT (always JSON):
 GUIDELINES:
 - For vague queries like "drone is unstable", ask clarifying questions
 - For parameter changes, validate ranges and provide warnings
-- Map natural language to parameter names (e.g., "roll rate" → "MC_ROLLRATE_P")
 - Be conversational and helpful, not robotic
-- If unsure about parameter name, provide suggestions array"""
+- If unsure about parameter name, provide suggestions array
+- Remember: RC_PAYLOAD_TH exists and controls RC payload threshold"""
     
     @staticmethod
     def _get_fallback_system_prompt() -> str:
@@ -121,10 +154,10 @@ Respond in JSON format with: intent, parameter_name, parameter_value, explanatio
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
-                temperature=0.1,  # Low temperature for consistent parameter handling
+                temperature=0.1,
                 max_tokens=800,
                 timeout=30,
-                response_format={"type": "json_object"}  # Ensure JSON response
+                response_format={"type": "json_object"}
             )
             
             content = response.choices[0].message.content
@@ -169,10 +202,13 @@ Respond in JSON format with: intent, parameter_name, parameter_value, explanatio
             
             # Validate parameter name exists
             param_name = data.get('parameter_name')
-            if param_name and param_name not in self._param_names:
-                # Try to find close matches
-                suggestions = self._find_similar_parameters(param_name)
-                if suggestions:
+            if param_name:
+                # Clean up parameter name (remove quotes, spaces, etc.)
+                param_name = self._clean_parameter_name(param_name)
+                
+                if param_name not in self._param_names:
+                    # Try to find close matches
+                    suggestions = self._find_similar_parameters(param_name)
                     return LLMResponse(
                         intent="unknown",
                         parameter_name=None,
@@ -198,27 +234,51 @@ Respond in JSON format with: intent, parameter_name, parameter_value, explanatio
                 confidence=0.0
             )
     
-    def _find_similar_parameters(self, param_name: str, max_suggestions: int = 5) -> List[str]:
-        """Find parameters similar to the given name"""
-        param_name_lower = param_name.lower()
-        suggestions = []
+    def _clean_parameter_name(self, param_name: str) -> str:
+        """Clean up parameter name by removing unwanted characters"""
+        if not param_name:
+            return ""
         
-        # Exact substring matches first
+        # Remove quotes, extra spaces, etc.
+        cleaned = param_name.strip().replace('"', '').replace("'", "").strip()
+        
+        # Convert to uppercase to match PX4 parameter convention
+        return cleaned.upper()
+    
+    def _find_similar_parameters(self, param_name: str, max_suggestions: int = 5) -> List[str]:
+        """Find parameters similar to the given name using multiple strategies"""
+        if not param_name:
+            return []
+        
+        param_name_upper = param_name.upper()
+        suggestions = set()
+        
+        # Strategy 1: Exact substring matches (case-insensitive)
         for name in self._param_names:
-            if param_name_lower in name.lower():
-                suggestions.append(name)
+            if param_name_upper in name.upper():
+                suggestions.add(name)
                 if len(suggestions) >= max_suggestions:
                     break
         
-        # If no substring matches, try prefix matches
-        if not suggestions:
+        # Strategy 2: Prefix matches
+        if len(suggestions) < max_suggestions:
             for name in self._param_names:
-                if name.lower().startswith(param_name_lower):
-                    suggestions.append(name)
+                if name.upper().startswith(param_name_upper):
+                    suggestions.add(name)
                     if len(suggestions) >= max_suggestions:
                         break
         
-        return suggestions
+        # Strategy 3: Word boundary matches
+        if len(suggestions) < max_suggestions:
+            for name in self._param_names:
+                # Split by underscores and check each part
+                parts = name.upper().split('_')
+                if any(param_name_upper in part for part in parts):
+                    suggestions.add(name)
+                    if len(suggestions) >= max_suggestions:
+                        break
+        
+        return list(suggestions)[:max_suggestions]
     
     def validate_parameter(self, param_name: str) -> bool:
         """Check if parameter name exists"""
@@ -235,3 +295,17 @@ Respond in JSON format with: intent, parameter_name, parameter_value, explanatio
             if param.get('name') == param_name:
                 return param
         return None
+    
+    def debug_parameter_lookup(self, search_term: str):
+        """Debug method to check parameter lookup"""
+        logger.info(f"Looking for: {search_term}")
+        logger.info(f"Total parameters: {len(self._param_names)}")
+        
+        if search_term in self._param_names:
+            logger.info(f"Exact match found: {search_term}")
+            return True
+        
+        similar = self._find_similar_parameters(search_term, 10)
+        logger.info(f"Similar parameters: {similar}")
+        
+        return False
