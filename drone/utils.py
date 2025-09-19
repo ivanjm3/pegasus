@@ -62,7 +62,7 @@ def find_px4_port() -> Optional[str]:
     # Common PX4 identifiers
     px4_keywords = [
         'px4', 'pixhawk', 'mavlink', 'autopilot', 'flight controller',
-        'ardupilot', 'qgroundcontrol', 'usb serial', 'ftdi', 'cp210'
+        'ardupilot', 'qgroundcontrol', 'usb serial', 'ftdi', 'cp210','fmu'
     ]
     
     for port_info in ports:
