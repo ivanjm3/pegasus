@@ -1,0 +1,53 @@
+2025-09-12 22:44:07,592 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-12 22:44:07,594 - __main__ - INFO - Configuration loaded successfully
+2025-09-12 22:44:07,771 - __main__ - INFO - PyQt application initialized
+2025-09-12 22:44:07,893 - backend.llm_handler - INFO - Loading parameters from: C:\Users\Ivan\Desktop\code\repos\pegasus\data\px4_params.json
+2025-09-12 22:44:07,902 - backend.llm_handler - INFO - Successfully loaded 1838 parameters
+2025-09-12 22:44:07,910 - backend.llm_handler - INFO - Extracted 1838 unique parameter names
+2025-09-12 22:44:07,910 - backend.llm_handler - INFO - Loaded 1838 parameters
+2025-09-12 22:44:07,926 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-12 22:44:07,930 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-12 22:44:07,962 - __main__ - INFO - Backend initialized successfully
+2025-09-12 22:44:08,561 - __main__ - INFO - Main window initialized
+2025-09-12 22:44:08,674 - __main__ - INFO - Application started successfully
+2025-09-12 22:44:15,561 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-19 10:32:48,443 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-19 10:32:48,458 - __main__ - INFO - Configuration loaded successfully
+2025-09-19 10:32:48,555 - __main__ - INFO - PyQt application initialized
+2025-09-19 10:32:48,665 - backend.llm_handler - INFO - Loading parameters from: C:\Users\Ivan\Desktop\code\repos\pegasus\data\px4_params.json
+2025-09-19 10:32:48,695 - backend.llm_handler - INFO - Successfully loaded 1838 parameters
+2025-09-19 10:32:48,695 - backend.llm_handler - INFO - Extracted 1838 unique parameter names
+2025-09-19 10:32:48,696 - backend.llm_handler - INFO - Loaded 1838 parameters
+2025-09-19 10:32:48,703 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-19 10:32:48,703 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-19 10:32:48,703 - __main__ - INFO - Backend initialized successfully
+2025-09-19 10:32:49,066 - __main__ - INFO - Main window initialized
+2025-09-19 10:32:49,125 - __main__ - INFO - Application started successfully
+2025-09-19 10:33:20,993 - openai._base_client - INFO - Retrying request to /chat/completions in 0.396425 seconds
+2025-09-19 10:33:21,393 - openai._base_client - INFO - Retrying request to /chat/completions in 0.755273 seconds
+2025-09-19 10:33:22,152 - backend.llm_handler - ERROR - LLM processing error: Connection error.
+2025-09-19 10:34:56,816 - __main__ - INFO - Application interrupted by user
+2025-09-19 10:35:49,447 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-19 10:35:49,447 - __main__ - INFO - Configuration loaded successfully
+2025-09-19 10:35:49,471 - __main__ - INFO - PyQt application initialized
+2025-09-19 10:35:49,519 - backend.llm_handler - INFO - Loading parameters from: C:\Users\Ivan\Desktop\code\repos\pegasus\data\px4_params.json
+2025-09-19 10:35:49,527 - backend.llm_handler - INFO - Successfully loaded 1838 parameters
+2025-09-19 10:35:49,527 - backend.llm_handler - INFO - Extracted 1838 unique parameter names
+2025-09-19 10:35:49,527 - backend.llm_handler - INFO - Loaded 1838 parameters
+2025-09-19 10:35:49,536 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-19 10:35:49,536 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-19 10:35:49,536 - __main__ - INFO - Backend initialized successfully
+2025-09-19 10:35:49,789 - __main__ - INFO - Main window initialized
+2025-09-19 10:35:49,828 - __main__ - INFO - Application started successfully
+2025-09-19 10:36:56,960 - openai._base_client - INFO - Retrying request to /chat/completions in 0.448334 seconds
+2025-09-19 10:37:34,666 - openai._base_client - INFO - Retrying request to /chat/completions in 0.860046 seconds
+2025-09-19 10:37:47,577 - backend.llm_handler - ERROR - LLM processing error: Connection error.
+2025-09-19 10:38:12,111 - openai._base_client - INFO - Retrying request to /chat/completions in 0.418258 seconds
+2025-09-19 10:38:24,581 - openai._base_client - INFO - Retrying request to /chat/completions in 0.860017 seconds
+2025-09-19 10:39:11,564 - backend.llm_handler - ERROR - LLM processing error: Request timed out.
+2025-09-19 10:40:54,399 - openai._base_client - INFO - Retrying request to /chat/completions in 0.488307 seconds
+2025-09-19 10:41:49,014 - openai._base_client - INFO - Retrying request to /chat/completions in 0.811865 seconds
+2025-09-19 10:42:34,383 - backend.llm_handler - ERROR - LLM processing error: Connection error.
+2025-09-19 10:44:35,671 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-19 10:45:01,856 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-19 10:48:05,144 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"

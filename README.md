@@ -1,0 +1,3 @@
+# pegasus
+
+python main.py

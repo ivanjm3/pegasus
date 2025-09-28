@@ -1,0 +1,7 @@
+openai_api_key: "KEY HERE"
+llm_model: "gpt-4.1-mini"
+temperature: 0.1
+log_level: "INFO"
+log_file: "logs/chatbot_backend.log"
+max_retries: 3
+timeout_seconds: 30

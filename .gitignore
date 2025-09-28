@@ -1,0 +1,6 @@
+# settings.yaml
+.venv/
+venv/
+test_backend.py
+test_ui.py
+__pycache__/
