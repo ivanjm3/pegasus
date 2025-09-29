@@ -483,6 +483,8 @@ class MainWindow(QMainWindow):
                     return
             op = self.backend.execute_drone_operation("refresh_parameters")
             self.log_widget.add_entry("system", op.message)
+            # After refresh, fetch full list for sidebar
+            QTimer.singleShot(200, self.fetch_and_populate_all_parameters)
         except Exception as e:
             self.log_widget.add_entry("error", f"Refresh failed: {e}")
     
@@ -632,6 +634,8 @@ class MainWindow(QMainWindow):
                 self.log_widget.add_entry("connection", "Connected to drone successfully")
                 
                 self.add_bot_message("🔗 Connected to drone! I can now safely help you modify parameters.", {"type": "success"})
+                # After connection, populate the sidebar with all parameters
+                QTimer.singleShot(200, self.fetch_and_populate_all_parameters)
             else:
                 self.add_bot_message(f"❌ Failed to connect to drone: {result.message}", {"type": "error"})
                 self.log_widget.add_entry("connection_error", f"Connection failed: {result.message}")
@@ -658,6 +662,35 @@ class MainWindow(QMainWindow):
         self.status_bar.showMessage("Disconnected from drone")
         
         self.add_bot_message("📡 Disconnected from drone. I can still explain parameters but cannot modify them.", {"type": "info"})
+
+    def fetch_and_populate_all_parameters(self):
+        """Fetch all parameters via backend list operation and populate sidebar."""
+        try:
+            if not self.backend or not self.backend.is_drone_connected():
+                return
+            op = self.backend.execute_drone_operation("list_parameters")
+            if not op.success:
+                return
+            text = (op.data or {}).get("result", "")
+            if not text:
+                return
+            # Parse lines like "  NAME = value"
+            params = {}
+            for line in text.splitlines():
+                line = line.strip()
+                if not line or line.startswith("📋") or set(line) == set("-"):
+                    continue
+                if "=" in line:
+                    parts = line.split("=", 1)
+                    name = parts[0].strip()
+                    value = parts[1].strip()
+                    # Remove potential alignment padding
+                    if name:
+                        params[name] = value
+            if params:
+                self.populate_parameter_list(params)
+        except Exception:
+            pass
     
     def new_session(self):
         """Start a new chat session"""

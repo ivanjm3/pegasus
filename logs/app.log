@@ -1940,3 +1940,152 @@ AttributeError: 'LLMHandler' object has no attribute '_handle_tool_execution'
 2025-09-29 14:32:41,722 - drone.mavlink_handler - INFO - Requesting parameter: GF_MAX_VER_DIST
 2025-09-29 14:32:41,824 - drone.mavlink_handler - INFO - Setting parameter MIS_TAKEOFF_ALT = 10.0
 2025-09-29 14:32:42,825 - drone.mavlink_handler - INFO - Requesting parameter: MIS_TAKEOFF_ALT
+2025-09-29 14:36:19,340 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-29 14:36:19,341 - __main__ - INFO - Configuration loaded successfully
+2025-09-29 14:36:19,358 - __main__ - INFO - PyQt application initialized
+2025-09-29 14:36:19,358 - __main__ - WARNING - No OpenAI API key found. Running in mock mode.
+2025-09-29 14:36:19,548 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-29 14:36:19,559 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-29 14:36:19,559 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-29 14:36:19,560 - __main__ - INFO - Backend initialized in mock mode
+2025-09-29 14:36:19,757 - __main__ - INFO - Main window initialized
+2025-09-29 14:36:19,764 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-29 14:36:19,764 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-29 14:36:19,786 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-29 14:36:19,787 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-29 14:36:19,788 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 14:36:22,171 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-29 14:36:40,592 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2025-09-29 14:36:40,594 - backend.llm_handler - ERROR - LLM processing error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: mock-api************ting. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-09-29 14:36:52,240 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2025-09-29 14:36:52,243 - backend.llm_handler - ERROR - LLM processing error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: mock-api************ting. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-09-29 14:37:09,787 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-29 14:37:09,788 - __main__ - INFO - Configuration loaded successfully
+2025-09-29 14:37:09,806 - __main__ - INFO - PyQt application initialized
+2025-09-29 14:37:09,991 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-29 14:37:10,000 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-29 14:37:10,001 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-29 14:37:10,001 - __main__ - INFO - Backend initialized successfully
+2025-09-29 14:37:10,199 - __main__ - INFO - Main window initialized
+2025-09-29 14:37:10,205 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-29 14:37:10,205 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-29 14:37:10,221 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-29 14:37:10,221 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-29 14:37:10,223 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 14:37:12,293 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-29 14:37:28,685 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:37:44,573 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:38:22,078 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:39:07,227 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:41:17,021 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-29 14:41:17,021 - __main__ - INFO - Configuration loaded successfully
+2025-09-29 14:41:17,041 - __main__ - INFO - PyQt application initialized
+2025-09-29 14:41:17,234 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-29 14:41:17,243 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-29 14:41:17,243 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-29 14:41:17,243 - __main__ - INFO - Backend initialized successfully
+2025-09-29 14:41:17,454 - __main__ - INFO - Main window initialized
+2025-09-29 14:41:17,460 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-29 14:41:17,460 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-29 14:41:17,478 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-29 14:41:17,478 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-29 14:41:17,479 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 14:41:18,576 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-29 14:41:43,176 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:42:03,014 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:44:49,720 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 14:48:27,534 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-29 14:48:27,535 - __main__ - INFO - Configuration loaded successfully
+2025-09-29 14:48:27,551 - __main__ - INFO - PyQt application initialized
+2025-09-29 14:48:27,743 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-29 14:48:27,752 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-29 14:48:27,753 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-29 14:48:27,753 - __main__ - INFO - Backend initialized successfully
+2025-09-29 14:48:27,945 - __main__ - INFO - Main window initialized
+2025-09-29 14:48:27,952 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-29 14:48:27,952 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-29 14:48:27,969 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-29 14:48:27,969 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-29 14:48:27,970 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 14:48:29,989 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-29 14:48:34,601 - drone.mavlink_handler - INFO - Setting parameter MPC_LAND_ALT2 = 4.0
+2025-09-29 14:48:35,602 - drone.mavlink_handler - INFO - Requesting parameter: MPC_LAND_ALT2
+2025-09-29 14:51:48,900 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-29 14:51:48,900 - __main__ - INFO - Configuration loaded successfully
+2025-09-29 14:51:48,917 - __main__ - INFO - PyQt application initialized
+2025-09-29 14:51:49,115 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-29 14:51:49,125 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-29 14:51:49,126 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-29 14:51:49,126 - __main__ - INFO - Backend initialized successfully
+2025-09-29 14:51:49,289 - __main__ - INFO - Main window initialized
+2025-09-29 14:51:49,295 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-29 14:51:49,296 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-29 14:51:49,313 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-29 14:51:49,313 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-29 14:51:49,314 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 14:51:50,668 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-29 14:52:13,904 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 14:54:22,275 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-29 14:54:22,276 - __main__ - INFO - Configuration loaded successfully
+2025-09-29 14:54:22,294 - __main__ - INFO - PyQt application initialized
+2025-09-29 14:54:22,486 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-29 14:54:22,495 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-29 14:54:22,496 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-29 14:54:22,496 - __main__ - INFO - Backend initialized successfully
+2025-09-29 14:54:22,704 - __main__ - INFO - Main window initialized
+2025-09-29 14:54:22,710 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-29 14:54:22,710 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-29 14:54:22,728 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-29 14:54:22,728 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-29 14:54:22,729 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 14:54:24,163 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-29 14:54:28,640 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 14:56:03,537 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:56:30,823 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:56:30,835 - drone.mavlink_handler - INFO - Setting parameter MPC_XY_VEL_MAX = 6.0
+2025-09-29 14:56:31,838 - drone.mavlink_handler - INFO - Requesting parameter: MPC_XY_VEL_MAX
+2025-09-29 14:56:31,944 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_UP = 2.0
+2025-09-29 14:56:32,945 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_UP
+2025-09-29 14:56:33,052 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_DN = 1.5
+2025-09-29 14:56:34,054 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_DN
+2025-09-29 14:56:34,165 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_HOR = 3.5
+2025-09-29 14:56:35,166 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_HOR
+2025-09-29 14:56:35,270 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_UP_MAX = 2.5
+2025-09-29 14:56:36,272 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_UP_MAX
+2025-09-29 14:56:36,373 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_DOWN_MAX = 1.8
+2025-09-29 14:56:37,375 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_DOWN_MAX
+2025-09-29 14:56:37,478 - drone.mavlink_handler - INFO - Setting parameter RTL_RETURN_ALT = 230.0
+2025-09-29 14:56:38,480 - drone.mavlink_handler - INFO - Requesting parameter: RTL_RETURN_ALT
+2025-09-29 14:56:38,583 - drone.mavlink_handler - INFO - Setting parameter GF_MAX_VER_DIST = 230.0
+2025-09-29 14:56:39,585 - drone.mavlink_handler - INFO - Requesting parameter: GF_MAX_VER_DIST
+2025-09-29 14:56:39,688 - drone.mavlink_handler - INFO - Setting parameter MIS_TAKEOFF_ALT = 10.0
+2025-09-29 14:56:40,692 - drone.mavlink_handler - INFO - Requesting parameter: MIS_TAKEOFF_ALT
+2025-09-29 14:56:43,664 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 14:58:15,145 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:58:52,800 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:59:21,301 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 14:59:42,406 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 15:01:12,010 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 15:01:33,948 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 15:01:33,953 - drone.mavlink_handler - INFO - Setting parameter MPC_XY_VEL_MAX = 10.0
+2025-09-29 15:01:34,955 - drone.mavlink_handler - INFO - Requesting parameter: MPC_XY_VEL_MAX
+2025-09-29 15:01:35,057 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_UP = 3.0
+2025-09-29 15:01:36,058 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_UP
+2025-09-29 15:01:36,163 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_DN = 2.0
+2025-09-29 15:01:37,164 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_DN
+2025-09-29 15:01:37,269 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_HOR = 5.0
+2025-09-29 15:01:38,270 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_HOR
+2025-09-29 15:01:38,375 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_UP_MAX = 3.0
+2025-09-29 15:01:39,375 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_UP_MAX
+2025-09-29 15:01:39,480 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_DOWN_MAX = 2.0
+2025-09-29 15:01:40,481 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_DOWN_MAX
+2025-09-29 15:01:40,584 - drone.mavlink_handler - INFO - Setting parameter RTL_RETURN_ALT = 520.0
+2025-09-29 15:01:41,585 - drone.mavlink_handler - INFO - Requesting parameter: RTL_RETURN_ALT
+2025-09-29 15:01:41,689 - drone.mavlink_handler - INFO - Setting parameter GF_MAX_VER_DIST = 520.0
+2025-09-29 15:01:42,690 - drone.mavlink_handler - INFO - Requesting parameter: GF_MAX_VER_DIST
+2025-09-29 15:01:42,792 - drone.mavlink_handler - INFO - Setting parameter MIS_TAKEOFF_ALT = 10.0
+2025-09-29 15:01:43,792 - drone.mavlink_handler - INFO - Requesting parameter: MIS_TAKEOFF_ALT
+2025-09-29 15:01:43,896 - drone.mavlink_handler - INFO - Setting parameter MPC_TILTMAX_AIR = 45.0
+2025-09-29 15:01:44,898 - drone.mavlink_handler - INFO - Requesting parameter: MPC_TILTMAX_AIR
+2025-09-29 15:01:49,113 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 15:05:03,706 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"

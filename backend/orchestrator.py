@@ -1,4 +1,5 @@
 from typing import Dict, Any, Optional, Union, List, Tuple
+import re
 from dataclasses import dataclass, asdict
 from functools import lru_cache
 import logging
@@ -111,6 +112,81 @@ class BackendOrchestrator:
         user_message = user_message.strip()
         
         try:
+            # Heuristic: direct parameter change commands (bypass LLM misclassification)
+            # Patterns: "set PARAM to VALUE", "change PARAM to VALUE", "set PARAM=VALUE"
+            change_match = re.match(r"\s*(set|change)\s+([A-Za-z0-9_]+)\s*(?:to|=)\s*([-+]?[0-9]*\.?[0-9]+)\s*$", user_message, flags=re.IGNORECASE)
+            if change_match:
+                _, raw_param, raw_value = change_match.groups()
+                param_name = raw_param.upper()
+                try:
+                    numeric_value = float(raw_value)
+                except ValueError:
+                    return ProcessingResult(
+                        success=False,
+                        response=f"❌ Invalid value '{raw_value}' for {param_name}.",
+                        intent='change',
+                        status=ProcessingStatus.VALIDATION_ERROR,
+                        parameter_name=param_name
+                    ).to_dict()
+
+                # Validate value
+                validation_result = self._validator.validate_parameter(param_name, numeric_value)
+                if not validation_result.valid:
+                    msg = f"Validation failed: {validation_result.message}"
+                    if validation_result.suggested_value is not None:
+                        msg += f"\nSuggested value: {validation_result.suggested_value}"
+                    return ProcessingResult(
+                        success=False,
+                        response=msg,
+                        intent='change',
+                        status=ProcessingStatus.VALIDATION_ERROR,
+                        parameter_name=param_name,
+                        parameter_value=raw_value
+                    ).to_dict()
+
+                # Apply immediately if connected
+                if getattr(drone_integration, 'is_connected', False):
+                    op = drone_integration.execute_operation(
+                        'change_parameter', param_name=param_name, new_value=validation_result.converted_value, force=True
+                    )
+                    if op.success:
+                        result_text = op.data.get('result') if op.data else f"✅ {param_name} updated to {validation_result.converted_value}."
+                        return ProcessingResult(
+                            success=True,
+                            response=result_text,
+                            intent='change',
+                            status=ProcessingStatus.SUCCESS,
+                            parameter_name=param_name,
+                            parameter_value=validation_result.converted_value
+                        ).to_dict()
+                    else:
+                        return ProcessingResult(
+                            success=False,
+                            response=f"❌ Failed to change parameter: {op.message}",
+                            intent='change',
+                            status=ProcessingStatus.SYSTEM_ERROR,
+                            parameter_name=param_name,
+                            parameter_value=validation_result.converted_value
+                        ).to_dict()
+                else:
+                    # Not connected: provide confirmation-style message to keep UX consistent
+                    param_info = self._validator.get_parameter_info(param_name)
+                    confirmation_message = self._build_change_confirmation_message(
+                        LLMResponse(request_type=None, intent='change', args={'param_name': param_name}, explanation=''),
+                        validation_result,
+                        param_info
+                    )
+                    return ProcessingResult(
+                        success=True,
+                        response=confirmation_message,
+                        intent='change',
+                        status=ProcessingStatus.SUCCESS,
+                        parameter_name=param_name,
+                        parameter_value=validation_result.converted_value,
+                        parameter_info=param_info,
+                        requires_confirmation=True
+                    ).to_dict()
+
             # Process through LLM directly (no pre-classification needed)
             llm_response = self._llm_handler.process_query(user_message, conversation_history)
 
@@ -380,14 +456,52 @@ class BackendOrchestrator:
                 parameter_value=provided_value
             )
         
-        # Get parameter info for confirmation message
+        # If connected to a drone, apply immediately (skip UI confirmation)
+        if getattr(drone_integration, 'is_connected', False):
+            try:
+                op = drone_integration.execute_operation(
+                    'change_parameter',
+                    param_name=param_name,
+                    new_value=validation_result.converted_value,
+                    force=True
+                )
+                if op.success:
+                    result_text = op.data.get('result') if op.data else '✅ Parameter updated.'
+                    return ProcessingResult(
+                        success=True,
+                        response=result_text,
+                        intent='change',
+                        status=ProcessingStatus.SUCCESS,
+                        parameter_name=param_name,
+                        parameter_value=validation_result.converted_value,
+                        confidence=llm_response.confidence
+                    )
+                else:
+                    return ProcessingResult(
+                        success=False,
+                        response=f"❌ Failed to change parameter: {op.message}",
+                        intent='change',
+                        status=ProcessingStatus.SYSTEM_ERROR,
+                        parameter_name=param_name,
+                        parameter_value=validation_result.converted_value,
+                        confidence=llm_response.confidence
+                    )
+            except Exception as e:
+                return ProcessingResult(
+                    success=False,
+                    response=f"❌ Error applying change: {e}",
+                    intent='change',
+                    status=ProcessingStatus.SYSTEM_ERROR,
+                    parameter_name=param_name,
+                    parameter_value=validation_result.converted_value,
+                    confidence=llm_response.confidence
+                )
+
+        # Not connected: fall back to confirmation flow handled by UI
         param_info = self._validator.get_parameter_info(param_name)
-        
-        # Build confirmation message
         confirmation_message = self._build_change_confirmation_message(
             llm_response, validation_result, param_info
         )
-        
         return ProcessingResult(
             success=True,
             response=confirmation_message,
