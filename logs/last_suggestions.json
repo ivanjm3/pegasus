@@ -2,53 +2,48 @@
   "proposed_parameters": [
     {
       "param": "MPC_XY_VEL_MAX",
-      "value": 10,
-      "reason": "Allow faster horizontal speed for efficient coverage at 500m altitude with no wind"
+      "value": 8,
+      "reason": "Limit horizontal speed for stability in gusty wind conditions near the building"
     },
     {
       "param": "MPC_Z_VEL_MAX_UP",
-      "value": 3,
-      "reason": "Enable controlled but reasonably quick ascent to 500m"
+      "value": 2,
+      "reason": "Controlled ascent speed to avoid sudden altitude changes near structure"
     },
     {
       "param": "MPC_Z_VEL_MAX_DN",
-      "value": 2,
-      "reason": "Allow safe and smooth descent speed"
+      "value": 1.5,
+      "reason": "Gentle descent speed to reduce oscillations and maintain stable altitude"
     },
     {
       "param": "MPC_ACC_HOR",
-      "value": 5,
-      "reason": "Moderate horizontal acceleration for smooth trajectory tracking"
+      "value": 3.5,
+      "reason": "Moderate horizontal acceleration for smoother trajectory tracking in wind"
     },
     {
       "param": "MPC_ACC_UP_MAX",
-      "value": 3,
-      "reason": "Allow sufficient vertical acceleration for ascent without abrupt movements"
+      "value": 2.5,
+      "reason": "Avoid aggressive climbs that could destabilize the drone in wind"
     },
     {
       "param": "MPC_ACC_DOWN_MAX",
-      "value": 2,
-      "reason": "Controlled vertical deceleration for descent"
+      "value": 1.8,
+      "reason": "Stable descent acceleration to maintain control"
     },
     {
       "param": "RTL_RETURN_ALT",
-      "value": 520,
-      "reason": "Set return-to-launch altitude slightly above 500m building scan altitude for safety margin"
+      "value": 230,
+      "reason": "Set return-to-launch altitude above 200m building plus margin for safety"
     },
     {
       "param": "GF_MAX_VER_DIST",
-      "value": 520,
-      "reason": "Allow vertical geofence to accommodate 500m altitude plus margin"
+      "value": 230,
+      "reason": "Allow vertical envelope to cover the building height during mission"
     },
     {
       "param": "MIS_TAKEOFF_ALT",
       "value": 10,
-      "reason": "Safe takeoff altitude before climbing to mission altitude"
-    },
-    {
-      "param": "MPC_TILTMAX_AIR",
-      "value": 45,
-      "reason": "Allow maximum tilt for agile flight at altitude"
+      "reason": "Safe takeoff altitude before approaching the building"
     }
   ]
 }

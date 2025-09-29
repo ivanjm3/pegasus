@@ -2146,3 +2146,103 @@ AttributeError: 'LLMHandler' object has no attribute '_handle_tool_execution'
 2025-09-29 15:11:59,772 - drone.mavlink_handler - INFO - Requesting parameter list...
 2025-09-29 15:12:00,829 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
 2025-09-29 15:12:07,617 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 18:57:11,213 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-29 18:57:11,229 - __main__ - INFO - Configuration loaded successfully
+2025-09-29 18:57:11,303 - __main__ - INFO - PyQt application initialized
+2025-09-29 18:57:11,303 - __main__ - WARNING - No OpenAI API key found. Running in mock mode.
+2025-09-29 18:57:11,378 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-29 18:57:11,386 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-29 18:57:11,386 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-29 18:57:11,386 - __main__ - INFO - Backend initialized in mock mode
+2025-09-29 18:57:11,933 - __main__ - INFO - Main window initialized
+2025-09-29 18:57:11,938 - drone.mavlink_handler - INFO - Connecting to COM4 at 57600 baud...
+2025-09-29 18:57:11,938 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM4'
+2025-09-29 18:57:22,189 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM4'
+2025-09-29 18:57:32,436 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM4:57600'
+2025-09-29 18:57:35,156 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM4:57600'
+2025-09-29 18:57:36,158 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM4'
+2025-09-29 18:57:46,405 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM4'
+2025-09-29 18:57:56,652 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM4:57600'
+2025-09-29 18:58:00,413 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM4:57600'
+2025-09-29 18:58:01,414 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM4'
+2025-09-29 18:58:11,661 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM4'
+2025-09-29 18:58:21,907 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM4:57600'
+2025-09-29 18:58:24,624 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'serial:COM4:57600'
+2025-09-29 18:58:24,625 - drone.mavlink_handler - INFO - Connecting to COM3 at 57600 baud...
+2025-09-29 18:58:24,626 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-29 18:58:34,691 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 18:58:34,692 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-29 18:58:44,700 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 18:58:44,701 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3:57600'
+2025-09-29 18:58:47,405 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM3:57600'
+2025-09-29 18:58:48,407 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-29 18:58:58,412 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 18:58:58,412 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-29 18:59:08,417 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 18:59:08,419 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3:57600'
+2025-09-29 18:59:11,181 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM3:57600'
+2025-09-29 18:59:12,184 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-29 18:59:22,188 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 18:59:22,189 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-29 18:59:32,196 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 18:59:32,196 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3:57600'
+2025-09-29 18:59:34,927 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'serial:COM3:57600'
+2025-09-29 18:59:34,928 - drone.mavlink_handler - ERROR - Connection failed: All connection attempts failed
+2025-09-29 18:59:34,928 - __main__ - WARNING - Auto-connect failed: Failed to connect to drone
+2025-09-29 18:59:37,063 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-29 19:00:38,969 - drone.mavlink_handler - INFO - Connecting to COM4 at 57600 baud...
+2025-09-29 19:00:38,969 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM4'
+2025-09-29 19:00:49,217 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM4'
+2025-09-29 19:00:59,473 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM4:57600'
+2025-09-29 19:01:02,193 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM4:57600'
+2025-09-29 19:01:03,195 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM4'
+2025-09-29 19:01:13,443 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM4'
+2025-09-29 19:01:23,692 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM4:57600'
+2025-09-29 19:02:00,920 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2025-09-29 19:02:00,952 - backend.llm_handler - ERROR - LLM processing error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: mock-api************ting. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-09-29 19:03:11,471 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2025-09-29 19:03:11,471 - backend.llm_handler - ERROR - LLM processing error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: mock-api************ting. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-09-29 19:03:28,628 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-29 19:03:28,631 - __main__ - INFO - Configuration loaded successfully
+2025-09-29 19:03:28,649 - __main__ - INFO - PyQt application initialized
+2025-09-29 19:03:28,703 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-29 19:03:28,712 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-29 19:03:28,712 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-29 19:03:28,713 - __main__ - INFO - Backend initialized successfully
+2025-09-29 19:03:29,383 - __main__ - INFO - Main window initialized
+2025-09-29 19:03:29,388 - drone.mavlink_handler - INFO - Connecting to COM4 at 57600 baud...
+2025-09-29 19:03:29,389 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM4'
+2025-09-29 19:03:39,731 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM4'
+2025-09-29 19:03:49,978 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM4:57600'
+2025-09-29 19:03:52,724 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM4:57600'
+2025-09-29 19:03:53,726 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM4'
+2025-09-29 19:04:04,064 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM4'
+2025-09-29 19:04:14,314 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM4:57600'
+2025-09-29 19:04:17,038 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM4:57600'
+2025-09-29 19:04:18,040 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM4'
+2025-09-29 19:04:28,375 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM4'
+2025-09-29 19:04:38,621 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM4:57600'
+2025-09-29 19:04:41,345 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'serial:COM4:57600'
+2025-09-29 19:04:41,345 - drone.mavlink_handler - INFO - Connecting to COM3 at 57600 baud...
+2025-09-29 19:04:41,346 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-29 19:04:51,357 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 19:04:51,358 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-29 19:05:01,363 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 19:05:01,364 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3:57600'
+2025-09-29 19:05:04,100 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM3:57600'
+2025-09-29 19:05:05,101 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-29 19:05:15,107 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 19:05:15,107 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-29 19:05:25,112 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 19:05:25,112 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3:57600'
+2025-09-29 19:05:27,824 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM3:57600'
+2025-09-29 19:05:28,826 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-29 19:05:38,833 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 19:05:38,834 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-29 19:05:48,840 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-29 19:05:48,842 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3:57600'
+2025-09-29 19:05:51,559 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'serial:COM3:57600'
+2025-09-29 19:05:51,559 - drone.mavlink_handler - ERROR - Connection failed: All connection attempts failed
+2025-09-29 19:05:51,559 - __main__ - WARNING - Auto-connect failed: Failed to connect to drone
+2025-09-29 19:11:32,750 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-29 19:12:02,634 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
