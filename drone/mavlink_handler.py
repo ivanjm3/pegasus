@@ -18,7 +18,7 @@ except ImportError as e:
 
 # Import from utils.py in same directory
 try:
-    from utils import validate_port_config, find_px4_port
+    from .utils import validate_port_config, find_px4_port
 except ImportError:
     print("Warning: Could not import utils.py - using fallback functions")
     def validate_port_config(port, baudrate):
@@ -76,61 +76,89 @@ class MAVLinkHandler:
         self.parameter_callbacks: Dict[str, List[Callable]] = {}
         self.ack_callbacks: Dict[str, List[Callable]] = {}
         self._last_heartbeat = 0
+        self._last_io_error_time = 0.0
         
     def connect(self, port: Optional[str] = None, baudrate: Optional[int] = None) -> bool:
         """Connect to PX4 via MAVLink."""
         try:
             self.state = ConnectionState.CONNECTING
             
-            # Get port from utils.py if not provided
-            if port is None:
-                port = find_px4_port()
-                if not port:
-                    raise ValueError("No port found")
-            
+            # Determine baudrate
             if baudrate is None:
                 baudrate = self.config.baudrate
+
+            # Resolve port(s)
+            candidate_ports: List[str] = []
+            if port is not None and port != "":
+                candidate_ports = [port]
+            else:
+                auto_port = find_px4_port()
+                if auto_port:
+                    candidate_ports.append(auto_port)
+                # Fallback: try all detected ports
+                try:
+                    import serial.tools.list_ports
+                    for p in serial.tools.list_ports.comports():
+                        candidate_ports.append(p.device)
+                except Exception:
+                    pass
+                # Deduplicate while preserving order
+                candidate_ports = list(dict.fromkeys(candidate_ports))
+                if not candidate_ports:
+                    raise ValueError("No port found")
             
-            logger.info(f"Connecting to {port} at {baudrate} baud...")
+            for port_candidate in candidate_ports:
+                logger.info(f"Connecting to {port_candidate} at {baudrate} baud...")
+                # Normalize Windows high-numbered COM ports
+                win_prefixed = port_candidate
+                try:
+                    if port_candidate.upper().startswith("COM") and len(port_candidate) > 4:
+                        win_prefixed = f"\\\\.\\{port_candidate}"
+                except Exception:
+                    pass
+
+                # Build attempt strings
+                connection_attempts = [
+                    port_candidate,
+                    win_prefixed,
+                    f"{port_candidate}:{baudrate}",
+                    f"serial:{port_candidate}:{baudrate}",
+                ]
             
-            # Try different connection methods for Windows COM ports
-            connection_attempts = [
-                port,  # Just "COM4"
-                f"COM{port.replace('COM', '')}",  # Ensure COM prefix
-                f"{port}:{baudrate}",  # With baudrate
-            ]
-            
-            for attempt_num in range(self.config.retries):
-                for conn_str in connection_attempts:
-                    try:
-                        logger.info(f"Attempt {attempt_num + 1}: Trying connection string '{conn_str}'")
-                        
-                        # Create MAVLink connection
-                        self.connection = mavutil.mavlink_connection(
-                            conn_str,
-                            baud=baudrate,
-                            timeout=self.config.timeout
-                        )
-                        
-                        # Wait for heartbeat
-                        if self._wait_for_heartbeat():
-                            self.state = ConnectionState.CONNECTED
-                            self.config.port = port
-                            self.config.baudrate = baudrate
-                            logger.info(f"✓ Successfully connected to {port}")
-                            return True
-                        else:
-                            logger.warning(f"No heartbeat received for '{conn_str}'")
-                            if self.connection:
-                                self.connection.close()
-                            
-                    except Exception as e:
-                        logger.debug(f"Connection string '{conn_str}' failed: {e}")
-                        continue
-                
-                # Wait before retrying
-                if attempt_num < self.config.retries - 1:
-                    time.sleep(1)
+                for attempt_num in range(self.config.retries):
+                    for conn_str in connection_attempts:
+                        try:
+                            logger.info(f"Attempt {attempt_num + 1}: Trying connection string '{conn_str}'")
+                            # Create MAVLink connection
+                            self.connection = mavutil.mavlink_connection(
+                                conn_str,
+                                baud=baudrate,
+                                timeout=self.config.timeout
+                            )
+                            # Wait for heartbeat
+                            if self._wait_for_heartbeat():
+                                self.state = ConnectionState.CONNECTED
+                                self.config.port = port_candidate
+                                self.config.baudrate = baudrate
+                                try:
+                                    logger.info(f"Connected to {port_candidate}")
+                                except Exception:
+                                    # Avoid Unicode issues on some consoles
+                                    logger.info("Connected to %s", port_candidate)
+                                return True
+                            else:
+                                logger.warning(f"No heartbeat received for '{conn_str}'")
+                                if self.connection:
+                                    try:
+                                        self.connection.close()
+                                    except Exception:
+                                        pass
+                        except Exception as e:
+                            logger.debug(f"Connection string '{conn_str}' failed: {e}")
+                            continue
+                    # Wait before retrying this port
+                    if attempt_num < self.config.retries - 1:
+                        time.sleep(1)
             
             raise Exception("All connection attempts failed")
             
@@ -260,6 +288,12 @@ class MAVLinkHandler:
                     self._handle_command_ack(msg)
                     messages_processed += 1
                 
+        except PermissionError as e:
+            # Rate-limit noisy Windows ClearCommError spam
+            now = time.time()
+            if now - self._last_io_error_time > 1.0:
+                logger.warning(f"Serial I/O warning: {e}")
+                self._last_io_error_time = now
         except Exception as e:
             logger.error(f"Error processing messages: {e}")
         
