@@ -5,7 +5,7 @@ Much cleaner and uses your existing MAVLink infrastructure.
 
 import time
 import logging
-from mavlink_handler import MAVLinkHandler, ConnectionConfig
+from .mavlink_handler import MAVLinkHandler, ConnectionConfig
 
 def list_parameters(handler: MAVLinkHandler) -> str:
     """Lists all parameters."""

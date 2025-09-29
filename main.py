@@ -80,14 +80,21 @@ class PX4ParameterAssistant:
     def setup_backend(self) -> bool:
         """Setup backend with configuration"""
         try:
-            if not self.config.get('openai_api_key'):
+            # Check for API key in environment or config
+            api_key = os.getenv("OPENAI_API_KEY") or self.config.get('openai_api_key')
+            
+            if not api_key:
                 logger.warning("No OpenAI API key found. Running in mock mode.")
-                self.backend = None
+                # Create backend with mock key for testing
+                self.backend = create_backend("mock-api-key-for-testing", 
+                                            llm_model=self.config.get('llm_model', 'gpt-4o-mini'),
+                                            px4_params_path='data/px4_params.json')
+                logger.info("Backend initialized in mock mode")
                 return True
             
             # Convert config to backend format
             backend_config = {
-                'openai_api_key': self.config['openai_api_key'],
+                'openai_api_key': api_key,
                 'llm_model': self.config.get('llm_model', 'gpt-4o-mini'),
                 'px4_params_path': 'data/px4_params.json'
             }
@@ -98,8 +105,17 @@ class PX4ParameterAssistant:
             
         except Exception as e:
             logger.error(f"Backend setup failed: {e}")
-            self.backend = None
-            return False
+            # Fallback to mock mode
+            try:
+                self.backend = create_backend("mock-api-key-for-testing", 
+                                            llm_model=self.config.get('llm_model', 'gpt-4o-mini'),
+                                            px4_params_path='data/px4_params.json')
+                logger.info("Backend initialized in fallback mock mode")
+                return True
+            except Exception as fallback_error:
+                logger.error(f"Fallback backend setup failed: {fallback_error}")
+                self.backend = None
+                return False
     
     def setup_application(self) -> bool:
         """Setup PyQt application"""
@@ -125,6 +141,14 @@ class PX4ParameterAssistant:
         try:
             self.main_window = MainWindow(backend=self.backend)
             logger.info("Main window initialized")
+            # Auto-connect to drone on startup if backend is available
+            try:
+                if self.backend and hasattr(self.backend, 'connect_to_drone'):
+                    result = self.backend.connect_to_drone()
+                    if not result.success:
+                        logger.warning(f"Auto-connect failed: {result.message}")
+            except Exception as e:
+                logger.warning(f"Auto-connect error: {e}")
             return True
             
         except Exception as e:
@@ -133,19 +157,39 @@ class PX4ParameterAssistant:
     
     def show_startup_message(self):
         """Show startup message to user"""
-        if not self.backend:
+        # Get system status
+        if self.backend:
+            status = self.backend.get_system_status()
+            param_count = status.get('parameter_count', 0)
+            drone_available = status.get('drone_connection', {}).get('drone_available', False)
+            
             QMessageBox.information(
                 self.main_window,
-                "Mock Mode",
-                "Running in mock mode.\n\n"
-                "To use the full AI functionality:\n"
-                "1. Add your OpenAI API key to config/settings.yaml\n"
-                "2. Restart the application\n\n"
-                "You can still test the UI functionality in mock mode."
+                "PX4 Parameter Assistant Ready",
+                f"🚁 PX4 Parameter Assistant v1.0\n\n"
+                f"✅ System Status:\n"
+                f"• Parameters loaded: {param_count}\n"
+                f"• Drone module: {'Available' if drone_available else 'Not available'}\n"
+                f"• AI Mode: {'Full AI' if self.config.get('openai_api_key') or os.getenv('OPENAI_API_KEY') else 'Mock Mode'}\n\n"
+                f"🎯 How to use:\n"
+                f"1. Connect to your drone using the 'Connection' menu\n"
+                f"2. Ask questions about parameters\n"
+                f"3. Request parameter changes safely\n\n"
+                f"💡 Example: 'What does MPC_XY_VEL_MAX control?'"
+            )
+        else:
+            QMessageBox.warning(
+                self.main_window,
+                "Limited Functionality",
+                "⚠️ Backend not available.\n\n"
+                "The application will run with limited functionality.\n"
+                "Please check the logs for more information."
             )
     
     def run(self) -> int:
         """Run the application"""
+        print("🚁 PX4 Parameter Assistant")
+        print("=" * 50)
         logger.info("Starting PX4 Parameter Assistant...")
         
         # Load configuration
@@ -161,21 +205,43 @@ class PX4ParameterAssistant:
         
         # Setup backend
         if not self.setup_backend():
-            logger.warning("Backend setup failed, continuing in mock mode")
+            logger.warning("Backend setup failed, continuing with limited functionality")
         
         # Setup main window
         if not self.setup_main_window():
             logger.error("Failed to setup main window")
             return 1
         
-        # Show startup message if in mock mode
-        if not self.backend:
-            self.show_startup_message()
+        # Show startup message with system status
+        self.show_startup_message()
         
         # Show main window
         self.main_window.show()
         
-        logger.info("Application started successfully")
+        # Log system status and show console info
+        if self.backend:
+            status = self.backend.get_system_status()
+            param_count = status.get('parameter_count', 0)
+            drone_available = status.get('drone_connection', {}).get('drone_available', False)
+            ai_mode = "Full AI" if self.config.get('openai_api_key') or os.getenv('OPENAI_API_KEY') else "Mock Mode"
+            
+            print(f"✅ System Status:")
+            print(f"   • Parameters loaded: {param_count}")
+            print(f"   • Drone module: {'Available' if drone_available else 'Not available'}")
+            print(f"   • AI Mode: {ai_mode}")
+            print(f"   • LLM Model: {status.get('llm_model', 'Unknown')}")
+            print()
+            print("🎯 Ready to assist with PX4 parameter management!")
+            print("   Use the UI to connect to your drone and start chatting.")
+            print()
+            
+            logger.info(f"Application started successfully - Parameters: {param_count}, "
+                       f"Drone available: {drone_available}")
+        else:
+            print("⚠️ Application started with limited functionality")
+            print("   Check logs for more information.")
+            print()
+            logger.info("Application started with limited functionality")
         
         # Run event loop
         return self.app.exec()

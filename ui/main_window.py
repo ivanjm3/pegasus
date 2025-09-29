@@ -2,14 +2,14 @@ import sys
 from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, 
                             QTextEdit, QLineEdit, QPushButton, QSplitter, 
                             QLabel, QFrame, QScrollArea, QStatusBar, QMenuBar,
-                            QMenu, QMessageBox, QProgressBar)
+                            QMenu, QMessageBox, QProgressBar, QListWidget, QListWidgetItem)
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QTimer
 from PyQt6.QtGui import QFont, QIcon, QAction, QPalette, QColor
 from datetime import datetime
 import json
 
-from chat_widgets import ChatBubbleWidget, LogWidget, ConnectionStatusWidget
-from dialogs import ConfirmationDialog, SettingsDialog
+from .chat_widgets import ChatBubbleWidget, LogWidget, ConnectionStatusWidget
+from .dialogs import ConfirmationDialog, SettingsDialog
 
 
 class ChatBotThread(QThread):
@@ -131,6 +131,7 @@ class ChatBotThread(QThread):
 class MainWindow(QMainWindow):
     def __init__(self, backend=None):
         super().__init__()
+        self.backend = backend
         self.setWindowTitle("PX4 Parameter Assistant")
         self.setGeometry(100, 100, 1200, 800)
         self.setMinimumSize(800, 600)
@@ -148,6 +149,12 @@ class MainWindow(QMainWindow):
         self.setup_styling()
         self.setup_menu()
         self.setup_status_bar()
+
+        # Poll for connection status and parameter updates
+        self.status_timer = QTimer(self)
+        self.status_timer.setInterval(500)  # 0.5s
+        self.status_timer.timeout.connect(self.poll_status)
+        self.status_timer.start()
         
     def init_ui(self):
         """Initialize the main UI layout"""
@@ -248,69 +255,132 @@ class MainWindow(QMainWindow):
         self.connection_details = QLabel("Status: Disconnected\nCOM Port: Not selected\nBaud Rate: 57600")
         self.connection_details.setStyleSheet("padding: 10px; background-color: #f0f0f0; border-radius: 5px;")
         
+        # Parameter search and list
+        self.param_search = QLineEdit()
+        self.param_search.setPlaceholderText("Search parameters (e.g., MPC, BAT_...)")
+        self.param_search.textChanged.connect(self.filter_parameters)
+
+        self.param_list = QListWidget()
+        self.param_list.setMaximumHeight(250)
+        self.param_list.setStyleSheet(
+            """
+            QListWidget {
+                background: #ffffff;
+                border: 1px solid #e0e0e0;
+                color: #1f2937;
+            }
+            QListWidget::item {
+                padding: 4px 6px;
+            }
+            QListWidget::item:selected {
+                background: #e3f2fd;
+                color: #0f172a;
+            }
+            """
+        )
+
+        refresh_btn = QPushButton("Refresh Parameters")
+        refresh_btn.clicked.connect(self.refresh_parameters_from_drone)
+
         # Log widget
         self.log_widget = LogWidget()
         
         layout.addWidget(title_label)
         layout.addWidget(self.connection_details)
+        layout.addWidget(QLabel("Parameters:"))
+        layout.addWidget(self.param_search)
+        layout.addWidget(self.param_list)
+        layout.addWidget(refresh_btn)
         layout.addWidget(QLabel("Activity Log:"))
         layout.addWidget(self.log_widget)
         
         return info_frame
     
     def setup_styling(self):
-        """Apply modern styling to the interface"""
+        """Apply modern ChatGPT-like styling to the interface"""
         self.setStyleSheet("""
             QMainWindow {
-                background-color: #f5f5f5;
+                background-color: #343541;
             }
             QFrame {
-                background-color: white;
+                background-color: #40414f;
                 border-radius: 8px;
-                border: 1px solid #e0e0e0;
+                border: 1px solid #4d4d5f;
+            }
+            QFrame#chatFrame {
+                background-color: #343541;
+                border: none;
             }
             QLineEdit {
-                padding: 10px;
-                border: 2px solid #e0e0e0;
-                border-radius: 20px;
+                padding: 12px 16px;
+                border: 1px solid #565869;
+                border-radius: 8px;
                 font-size: 14px;
-                background-color: white;
+                background-color: #40414f;
+                color: #ececf1;
             }
             QLineEdit:focus {
-                border-color: #4a90e2;
+                border-color: #10a37f;
+                background-color: #40414f;
             }
             QPushButton {
-                background-color: #4a90e2;
+                background-color: #10a37f;
                 color: white;
                 border: none;
                 padding: 10px 20px;
-                border-radius: 20px;
-                font-weight: bold;
+                border-radius: 6px;
+                font-weight: 600;
+                font-size: 14px;
             }
             QPushButton:hover {
-                background-color: #357abd;
+                background-color: #1a7f64;
             }
             QPushButton:pressed {
-                background-color: #2968a3;
+                background-color: #0d8a6a;
             }
             QPushButton:disabled {
-                background-color: #cccccc;
-                color: #666666;
+                background-color: #565869;
+                color: #8e8ea0;
             }
             QScrollArea {
                 border: none;
-                background-color: white;
+                background-color: #343541;
             }
             QProgressBar {
                 border: none;
-                background-color: #e0e0e0;
+                background-color: #565869;
                 border-radius: 2px;
+                height: 3px;
             }
             QProgressBar::chunk {
-                background-color: #4a90e2;
+                background-color: #10a37f;
                 border-radius: 2px;
             }
+            QLabel {
+                color: #ececf1;
+            }
+            QMenuBar {
+                background-color: #202123;
+                color: #ececf1;
+                border-bottom: 1px solid #4d4d5f;
+            }
+            QMenuBar::item:selected {
+                background-color: #40414f;
+            }
+            QMenu {
+                background-color: #2a2b32;
+                color: #ececf1;
+                border: 1px solid #4d4d5f;
+            }
+            QMenu::item:selected {
+                background-color: #40414f;
+            }
+            QStatusBar {
+                background-color: #202123;
+                color: #ececf1;
+            }
         """)
+
     
     def setup_menu(self):
         """Setup the menu bar"""
@@ -362,6 +432,59 @@ class MainWindow(QMainWindow):
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
         self.status_bar.showMessage("Ready - Not connected to drone")
+
+    def poll_status(self):
+        """Poll backend for status and update UI."""
+        try:
+            if not self.backend:
+                return
+            status = self.backend.get_system_status()
+            conn = status.get('drone_connection', {})
+            connected = bool(conn.get('connected'))
+            if connected != self.is_connected:
+                self.is_connected = connected
+                self.connection_widget.update_status(connected)
+                port = conn.get('port') or 'Unknown'
+                baud = conn.get('baudrate') or 'Unknown'
+                self.connection_details.setText(f"Status: {'Connected ✅' if connected else 'Disconnected'}\nCOM Port: {port}\nBaud Rate: {baud}")
+                self.status_bar.showMessage("Connected to drone" if connected else "Disconnected from drone")
+
+            # Update parameters view when available
+            params = status.get('drone_parameters', {}) or {}
+            if params and self.param_list.count() == 0:
+                self.populate_parameter_list(params)
+        except Exception:
+            pass
+
+    def populate_parameter_list(self, params: dict):
+        """Populate the parameter list from a dict {name: value}."""
+        self.param_list.clear()
+        for name in sorted(params.keys()):
+            item = QListWidgetItem(f"{name}: {params[name]}")
+            item.setData(Qt.ItemDataRole.UserRole, name)
+            self.param_list.addItem(item)
+
+    def filter_parameters(self):
+        """Filter parameter list by search text."""
+        text = self.param_search.text().strip().lower()
+        for i in range(self.param_list.count()):
+            item = self.param_list.item(i)
+            visible = (text in item.text().lower())
+            item.setHidden(not visible)
+
+    def refresh_parameters_from_drone(self):
+        """Request a parameter refresh via backend."""
+        try:
+            if not self.backend or not self.backend.is_drone_connected():
+                self.add_bot_message("⚠️ Not connected to drone. Attempting to connect...", {"type": "warning"})
+                result = self.backend.connect_to_drone()
+                if not result.success:
+                    self.add_bot_message("❌ Unable to connect to drone.", {"type": "error"})
+                    return
+            op = self.backend.execute_drone_operation("refresh_parameters")
+            self.log_widget.add_entry("system", op.message)
+        except Exception as e:
+            self.log_widget.add_entry("error", f"Refresh failed: {e}")
     
     def send_message(self):
         """Handle sending user messages"""
@@ -430,9 +553,36 @@ class MainWindow(QMainWindow):
     
     def execute_parameter_change(self, param_name, new_value):
         """Execute the actual parameter change"""
-        # This will integrate with drone/param_manager.py later
-        self.add_bot_message(f"✅ Parameter {param_name} updated to {new_value} successfully!", {"type": "success"})
-        self.log_widget.add_entry("param_change", f"Changed {param_name} = {new_value}")
+        if not self.backend:
+            self.add_bot_message("❌ Backend not available. Cannot execute parameter change.", {"type": "error"})
+            return
+        
+        if not self.backend.is_drone_connected():
+            # Attempt auto-connect if not yet connected
+            result = self.backend.connect_to_drone()
+            if not result.success:
+                self.add_bot_message("❌ Not connected to drone. Cannot execute parameter change.", {"type": "error"})
+                return
+        
+        try:
+            # Execute the parameter change through the backend
+            result = self.backend.execute_drone_operation(
+                "change_parameter",
+                param_name=param_name,
+                new_value=new_value,
+                force=True  # Skip interactive confirmation since UI already handled it
+            )
+            
+            if result.success:
+                self.add_bot_message(f"✅ Parameter {param_name} updated to {new_value} successfully!", {"type": "success"})
+                self.log_widget.add_entry("param_change", f"Changed {param_name} = {new_value}")
+            else:
+                self.add_bot_message(f"❌ Failed to change parameter: {result.message}", {"type": "error"})
+                self.log_widget.add_entry("param_change_error", f"Failed to change {param_name}: {result.message}")
+                
+        except Exception as e:
+            self.add_bot_message(f"❌ Error executing parameter change: {str(e)}", {"type": "error"})
+            self.log_widget.add_entry("param_change_error", f"Error changing {param_name}: {str(e)}")
     
     def add_user_message(self, message):
         """Add user message bubble to chat"""
@@ -459,22 +609,53 @@ class MainWindow(QMainWindow):
     
     def connect_to_drone(self):
         """Connect to drone via MAVLink"""
-        # Placeholder - will integrate with drone/mavlink_handler.py
-        self.is_connected = True
-        self.connection_widget.update_status(True)
-        self.connection_details.setText("Status: Connected ✅\nCOM Port: COM3\nBaud Rate: 57600")
-        self.status_bar.showMessage("Connected to drone")
-        self.log_widget.add_entry("connection", "Connected to drone successfully")
+        if not self.backend:
+            self.add_bot_message("❌ Backend not available. Cannot connect to drone.", {"type": "error"})
+            return
         
-        self.add_bot_message("🔗 Connected to drone! I can now safely help you modify parameters.", {"type": "success"})
+        try:
+            # Try to connect to drone through backend
+            result = self.backend.connect_to_drone()
+            
+            if result.success:
+                self.is_connected = True
+                self.connection_widget.update_status(True)
+                
+                # Get connection details
+                status = self.backend.get_system_status()
+                drone_status = status.get('drone_connection', {})
+                port = drone_status.get('port', 'Unknown')
+                baudrate = drone_status.get('baudrate', 'Unknown')
+                
+                self.connection_details.setText(f"Status: Connected ✅\nCOM Port: {port}\nBaud Rate: {baudrate}")
+                self.status_bar.showMessage("Connected to drone")
+                self.log_widget.add_entry("connection", "Connected to drone successfully")
+                
+                self.add_bot_message("🔗 Connected to drone! I can now safely help you modify parameters.", {"type": "success"})
+            else:
+                self.add_bot_message(f"❌ Failed to connect to drone: {result.message}", {"type": "error"})
+                self.log_widget.add_entry("connection_error", f"Connection failed: {result.message}")
+                
+        except Exception as e:
+            self.add_bot_message(f"❌ Error connecting to drone: {str(e)}", {"type": "error"})
+            self.log_widget.add_entry("connection_error", f"Connection error: {str(e)}")
     
     def disconnect_from_drone(self):
         """Disconnect from drone"""
+        if self.backend:
+            try:
+                result = self.backend.disconnect_from_drone()
+                if result.success:
+                    self.log_widget.add_entry("connection", "Disconnected from drone")
+                else:
+                    self.log_widget.add_entry("connection_error", f"Disconnect error: {result.message}")
+            except Exception as e:
+                self.log_widget.add_entry("connection_error", f"Disconnect error: {str(e)}")
+        
         self.is_connected = False
         self.connection_widget.update_status(False)
         self.connection_details.setText("Status: Disconnected\nCOM Port: Not selected\nBaud Rate: 57600")
         self.status_bar.showMessage("Disconnected from drone")
-        self.log_widget.add_entry("connection", "Disconnected from drone")
         
         self.add_bot_message("📡 Disconnected from drone. I can still explain parameters but cannot modify them.", {"type": "info"})
     

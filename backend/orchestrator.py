@@ -5,6 +5,7 @@ import logging
 from enum import Enum
 from .llm_handler import LLMHandler, LLMResponse
 from .validation import ParameterValidator, ValidationResult
+from .drone_integration import drone_integration, DroneOperationResult
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +39,7 @@ class ProcessingResult:
         return {k: v for k, v in result.items() if v is not None}
 
 class BackendOrchestrator:
-    __slots__ = ['_llm_handler', '_validator', '_config']
+    __slots__ = ['_llm_handler', '_validator', '_config', '_last_proposed_parameters']
     
     def __init__(self, config: Dict[str, Any]):
         """Initialize with dependency validation"""
@@ -55,6 +56,7 @@ class BackendOrchestrator:
             self._validator = ParameterValidator(
                 px4_params_path=config.get('px4_params_path', 'data/px4_params.json')
             )
+            self._last_proposed_parameters = []
             logger.info("Backend orchestrator initialized successfully")
         except Exception as e:
             logger.error(f"Failed to initialize backend components: {e}")
@@ -111,7 +113,108 @@ class BackendOrchestrator:
         try:
             # Process through LLM directly (no pre-classification needed)
             llm_response = self._llm_handler.process_query(user_message, conversation_history)
+
+            # Heuristic: if user explicitly asks to list parameters, execute tool directly
+            user_l = user_message.lower()
+            if ("list" in user_l and "parameter" in user_l) or llm_response.intent == 'list_parameters':
+                if drone_integration.is_connected:
+                    op = drone_integration.execute_operation("list_parameters")
+                    if op.success:
+                        return ProcessingResult(
+                            success=True,
+                            response=op.data.get("result", ""),
+                            intent='list_parameters',
+                            status=ProcessingStatus.SUCCESS
+                        ).to_dict()
+                    else:
+                        return ProcessingResult(
+                            success=False,
+                            response=f"Failed to list parameters: {op.message}",
+                            intent='list_parameters',
+                            status=ProcessingStatus.SYSTEM_ERROR
+                        ).to_dict()
+                else:
+                    return ProcessingResult(
+                        success=False,
+                        response="⚠️ Cannot list parameters: Not connected to a drone. Please connect and try again.",
+                        intent='list_parameters',
+                        status=ProcessingStatus.SYSTEM_ERROR
+                    ).to_dict()
             
+            # Cache proposed parameters from guidance responses for follow-up batch apply
+            if getattr(llm_response, 'request_type', None) and llm_response.request_type.value == 'guidance':
+                proposed = (llm_response.args or {}).get('proposed_parameters') or []
+                if isinstance(proposed, list) and proposed:
+                    self._last_proposed_parameters = proposed
+                    # If the user asked to "suggest", persist JSON to file and return minimal UI text
+                    if 'suggest' in user_l:
+                        try:
+                            import json, os
+                            os.makedirs('logs', exist_ok=True)
+                            with open('logs/last_suggestions.json', 'w', encoding='utf-8') as f:
+                                json.dump({'proposed_parameters': proposed}, f, indent=2)
+                            return ProcessingResult(
+                                success=True,
+                                response="Suggestions captured. You can now say 'set the values' to apply them.",
+                                intent='guidance',
+                                status=ProcessingStatus.SUCCESS,
+                                suggestions=llm_response.suggestions or [],
+                                confidence=llm_response.confidence
+                            ).to_dict()
+                        except Exception:
+                            # If file write fails, still proceed normally
+                            pass
+
+            # Follow-up: user asks to "set/apply these" without re-sending the list
+            if any(kw in user_l for kw in ["apply these", "set these", "change these", "commit these", "set the values", "apply the values"]):
+                if getattr(drone_integration, 'is_connected', False):
+                    if not self._last_proposed_parameters:
+                        # Try to load from file if cache is empty
+                        try:
+                            import json
+                            with open('logs/last_suggestions.json', 'r', encoding='utf-8') as f:
+                                data = json.load(f)
+                                if isinstance(data, dict):
+                                    self._last_proposed_parameters = data.get('proposed_parameters') or []
+                        except Exception:
+                            pass
+                    if self._last_proposed_parameters:
+                        # Build a synthetic LLMResponse-like structure
+                        batch_args = { 'proposed_parameters': self._last_proposed_parameters }
+                        fake_response = LLMResponse(
+                            request_type=getattr(llm_response, 'request_type'),
+                            intent='batch_change_parameters',
+                            args=batch_args,
+                            explanation='Applying previously suggested parameters',
+                            confidence=0.9
+                        )
+                        # Delegate to tool execution through LLM handler
+                        if hasattr(self._llm_handler, 'run_tool_intent'):
+                            result_text = self._llm_handler.run_tool_intent(fake_response)  # type: ignore
+                        else:
+                            # Fallback to internal tool executor if helper not present
+                            result_text = self._llm_handler._handle_tool_execution(fake_response)  # type: ignore
+                        return ProcessingResult(
+                            success=True,
+                            response=result_text,
+                            intent='batch_change_parameters',
+                            status=ProcessingStatus.SUCCESS
+                        ).to_dict()
+                    else:
+                        return ProcessingResult(
+                            success=False,
+                            response="No previous suggested parameters to apply. Ask for recommendations first.",
+                            intent='batch_change_parameters',
+                            status=ProcessingStatus.VALIDATION_ERROR
+                        ).to_dict()
+                else:
+                    return ProcessingResult(
+                        success=False,
+                        response="⚠️ Cannot apply parameters: Not connected to a drone.",
+                        intent='batch_change_parameters',
+                        status=ProcessingStatus.SYSTEM_ERROR
+                    ).to_dict()
+
             # Handle LLM errors
             if llm_response.intent == 'error':
                 return ProcessingResult(
@@ -122,10 +225,14 @@ class BackendOrchestrator:
                 ).to_dict()
             
             # Route to appropriate handler based on LLM's intent classification
+            # Prefer request_type when available for richer semantics
+            req_type = getattr(llm_response, 'request_type', None)
             if llm_response.intent == 'explain':
                 return self._handle_explanation(llm_response).to_dict()
             elif llm_response.intent == 'change':
                 return self._handle_parameter_change(llm_response).to_dict()
+            elif (req_type and getattr(req_type, 'value', '') == 'guidance') or llm_response.intent == 'guide':
+                return self._handle_guidance(llm_response).to_dict()
             else:
                 return self._handle_unknown_intent(llm_response).to_dict()
                 
@@ -146,7 +253,8 @@ class BackendOrchestrator:
     
     def _handle_explanation(self, llm_response: LLMResponse) -> ProcessingResult:
         """Handle parameter explanation requests with enhanced information"""
-        if not llm_response.parameter_name:
+        param_name = (llm_response.args or {}).get('param_name')
+        if not param_name:
             return ProcessingResult(
                 success=False,
                 response="I couldn't identify which parameter you want explained. Please be more specific.",
@@ -155,12 +263,12 @@ class BackendOrchestrator:
                 suggestions=llm_response.suggestions or []
             )
         
-        param_info = self._validator.get_parameter_info(llm_response.parameter_name)
+        param_info = self._validator.get_parameter_info(param_name)
         
         if not param_info:
             # Check if LLM provided suggestions, otherwise generate them
-            suggestions = llm_response.suggestions or self._validator.get_similar_parameters(llm_response.parameter_name)
-            error_msg = f"Parameter '{llm_response.parameter_name}' not found."
+            suggestions = llm_response.suggestions or self._validator.get_similar_parameters(param_name)
+            error_msg = f"Parameter '{param_name}' not found."
             if suggestions:
                 error_msg += f" Did you mean: {', '.join(suggestions[:3])}?"
             
@@ -169,12 +277,12 @@ class BackendOrchestrator:
                 response=error_msg,
                 intent='explain',
                 status=ProcessingStatus.PARAMETER_NOT_FOUND,
-                parameter_name=llm_response.parameter_name,
+                parameter_name=param_name,
                 suggestions=suggestions
             )
         
         # Use the validator's parameter summary for consistent formatting
-        parameter_summary = self._validator.get_parameter_summary(llm_response.parameter_name)
+        parameter_summary = self._validator.get_parameter_summary(param_name)
         
         # Combine LLM explanation with technical details
         enhanced_explanation = self._build_explanation_response(
@@ -188,7 +296,7 @@ class BackendOrchestrator:
             response=enhanced_explanation,
             intent='explain',
             status=ProcessingStatus.SUCCESS,
-            parameter_name=llm_response.parameter_name,
+            parameter_name=param_name,
             parameter_info=param_info,
             confidence=llm_response.confidence
         )
@@ -216,7 +324,9 @@ class BackendOrchestrator:
     
     def _handle_parameter_change(self, llm_response: LLMResponse) -> ProcessingResult:
         """Handle parameter change requests with comprehensive validation"""
-        if not llm_response.parameter_name:
+        args = llm_response.args or {}
+        param_name = args.get('param_name')
+        if not param_name:
             return ProcessingResult(
                 success=False,
                 response="I couldn't identify which parameter you want to change. Please specify the parameter name.",
@@ -225,19 +335,23 @@ class BackendOrchestrator:
                 suggestions=llm_response.suggestions or []
             )
         
-        if llm_response.parameter_value is None:
+        # Accept either numeric new_value or string new_value_str from the LLM
+        provided_value = args.get('new_value')
+        if provided_value is None:
+            provided_value = args.get('new_value_str')
+        if provided_value is None:
             return ProcessingResult(
                 success=False,
                 response="I couldn't determine what value you want to set. Please specify a value.",
                 intent='change',
                 status=ProcessingStatus.VALIDATION_ERROR,
-                parameter_name=llm_response.parameter_name
+                parameter_name=param_name
             )
         
         # Validate the parameter value
         validation_result = self._validator.validate_parameter(
-            llm_response.parameter_name,
-            llm_response.parameter_value
+            param_name,
+            provided_value
         )
         
         if not validation_result.valid:
@@ -252,12 +366,12 @@ class BackendOrchestrator:
                 response=error_response,
                 intent='change',
                 status=ProcessingStatus.VALIDATION_ERROR,
-                parameter_name=llm_response.parameter_name,
-                parameter_value=llm_response.parameter_value
+                parameter_name=param_name,
+                parameter_value=provided_value
             )
         
         # Get parameter info for confirmation message
-        param_info = self._validator.get_parameter_info(llm_response.parameter_name)
+        param_info = self._validator.get_parameter_info(param_name)
         
         # Build confirmation message
         confirmation_message = self._build_change_confirmation_message(
@@ -269,7 +383,7 @@ class BackendOrchestrator:
             response=confirmation_message,
             intent='change',
             status=ProcessingStatus.SUCCESS,
-            parameter_name=llm_response.parameter_name,
+            parameter_name=param_name,
             parameter_value=validation_result.converted_value,
             parameter_info=param_info,
             requires_confirmation=True,
@@ -304,9 +418,10 @@ class BackendOrchestrator:
         """Handle unknown intents with helpful suggestions"""
         # Use LLM's suggestions if available, otherwise generate them
         suggestions = llm_response.suggestions or []
+        param_name = (llm_response.args or {}).get('param_name')
         
-        if llm_response.parameter_name and not suggestions:
-            suggestions = self._validator.get_similar_parameters(llm_response.parameter_name)
+        if param_name and not suggestions:
+            suggestions = self._validator.get_similar_parameters(param_name)
         
         response = llm_response.explanation or "I'm not sure how to help with that request."
         response += "\n\nTry asking me to 'explain' a parameter or 'change' it to a specific value."
@@ -319,8 +434,43 @@ class BackendOrchestrator:
             response=response,
             intent='unknown',
             status=ProcessingStatus.UNKNOWN_INTENT,
-            parameter_name=llm_response.parameter_name,
+            parameter_name=param_name,
             suggestions=suggestions,
+            confidence=llm_response.confidence
+        )
+
+    def _handle_guidance(self, llm_response: LLMResponse) -> ProcessingResult:
+        """Provide scenario-based guidance with suggested parameters and rationale"""
+        args = llm_response.args or {}
+        proposed = args.get('proposed_parameters', [])  # list of {param, value, reason}
+        related = args.get('related_parameters', [])    # optional list of related params
+
+        parts = []
+        if llm_response.explanation:
+            parts.append(llm_response.explanation.strip())
+
+        if proposed:
+            parts.append("\nRecommended parameter set:")
+            for item in proposed[:10]:
+                p = item.get('param') or item.get('name') or 'UNKNOWN'
+                v = item.get('value') or item.get('target')
+                r = item.get('reason') or ''
+                parts.append(f"• {p} → {v}{' — ' + r if r else ''}")
+
+        if related:
+            parts.append("\nRelated parameters to review:")
+            parts.append(", ".join(map(str, related[:10])))
+
+        parts.append("\nNote: Validate these values against your airframe limits and test incrementally.")
+
+        response = "\n".join(parts)
+
+        return ProcessingResult(
+            success=True,
+            response=response,
+            intent='guidance',
+            status=ProcessingStatus.SUCCESS,
+            suggestions=llm_response.suggestions or [],
             confidence=llm_response.confidence
         )
     
@@ -343,7 +493,38 @@ class BackendOrchestrator:
             'parameter_count': self._validator.parameter_count,
             'llm_model': self._config.get('llm_model', 'gpt-4'),
             'components_initialized': True,
+            'drone_connection': drone_integration.get_connection_status(),
+            'drone_parameters': drone_integration.get_parameters_snapshot() if getattr(drone_integration, 'get_parameters_snapshot', None) else {},
             'cache_info': {
                 'process_user_message': self._process_user_message_cached.cache_info()._asdict()
             }
         }
+
+    # Drone connection helpers exposed to UI
+    def connect_to_drone(self, port: Optional[str] = None, baudrate: int = 57600) -> DroneOperationResult:
+        return drone_integration.connect(port, baudrate)
+    
+    def disconnect_from_drone(self) -> DroneOperationResult:
+        return drone_integration.disconnect()
+    
+    def execute_drone_operation(self, operation: str, **kwargs) -> DroneOperationResult:
+        return drone_integration.execute_operation(operation, **kwargs)
+    
+    def is_drone_connected(self) -> bool:
+        return drone_integration.is_connected
+    
+    def connect_to_drone(self, port: Optional[str] = None, baudrate: int = 57600) -> DroneOperationResult:
+        """Connect to drone"""
+        return drone_integration.connect(port, baudrate)
+    
+    def disconnect_from_drone(self) -> DroneOperationResult:
+        """Disconnect from drone"""
+        return drone_integration.disconnect()
+    
+    def execute_drone_operation(self, operation: str, **kwargs) -> DroneOperationResult:
+        """Execute a drone operation"""
+        return drone_integration.execute_operation(operation, **kwargs)
+    
+    def is_drone_connected(self) -> bool:
+        """Check if drone is connected"""
+        return drone_integration.is_connected

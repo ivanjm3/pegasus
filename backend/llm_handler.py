@@ -15,17 +15,33 @@ from enum import Enum
 
 from openai import OpenAI
 
-# Tooling
-from drone.mavlink_handler import MAVLinkHandler
-from drone.param_manager import (
-    change_parameter,
-    list_parameters,
-    read_parameter,
-    refresh_parameters,
-    search_parameters,
-)
-
 logger = logging.getLogger(__name__)
+
+# Tooling - Import with proper error handling
+try:
+    from drone.mavlink_handler import MAVLinkHandler
+    from drone.param_manager import (
+        change_parameter,
+        list_parameters,
+        read_parameter,
+        refresh_parameters,
+        search_parameters,
+    )
+    DRONE_MODULE_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"Drone module not available: {e}")
+    DRONE_MODULE_AVAILABLE = False
+    # Define dummy functions for when drone module is not available
+    def change_parameter(*args, **kwargs):
+        return "Drone module not available"
+    def list_parameters(*args, **kwargs):
+        return "Drone module not available"
+    def read_parameter(*args, **kwargs):
+        return "Drone module not available"
+    def refresh_parameters(*args, **kwargs):
+        return "Drone module not available"
+    def search_parameters(*args, **kwargs):
+        return "Drone module not available"
 
 
 # --- Enums for Request Types ---
@@ -147,7 +163,7 @@ class LLMHandler:
     
     def _build_enhanced_system_prompt(self) -> str:
         """Builds an enhanced, detailed system prompt for intelligent interaction."""
-        return f"""You are an advanced, safety-conscious AI assistant for managing PX4 drone parameters. 
+        return """You are an advanced, safety-conscious AI assistant for managing PX4 drone parameters. 
 Your role is to intelligently interpret user requests, provide detailed explanations, ensure safety, 
 and guide users through parameter management with context awareness.
 
@@ -180,7 +196,36 @@ Always respond with a JSON object containing:
     "next_steps": ["possible actions user could take next"]
 }}
 
-### 3. AVAILABLE TOOLS (for TOOL_EXECUTION requests only):
+### 3. GUIDANCE FOR SCENARIO-BASED QUERIES
+When the user asks scenario questions (e.g., "It's windy and I want to scan a 200m building"), do NOT ask for a specific parameter. Classify as `request_type = guidance` and:
+- Provide a concise rationale in "explanation" tailored to the scenario (wind, altitude, mission type, safety).
+- Populate `args.proposed_parameters` with 5-12 items, each object like: {"param": "NAME", "value": number/string, "reason": "why"}.
+- Include `args.related_parameters` with 3-8 additional params to review.
+- Ensure values are within typical safe ranges; note constraints if the dataset lacks exact bounds.
+- Prefer well-known PX4 params for speed, accel, position control, EKF robustness, RTL/landing, and failsafes.
+
+Example for windy, tall-building mapping (adapt to airframe):
+args.proposed_parameters = [
+  {"param":"MPC_XY_VEL_MAX","value":8,"reason":"limit horizontal speed for stability in gusts"},
+  {"param":"MPC_Z_VEL_MAX_UP","value":2,"reason":"controlled ascent near structure"},
+  {"param":"MPC_Z_VEL_MAX_DN","value":1.5,"reason":"gentle descent to reduce oscillation"},
+  {"param":"MPC_ACC_HOR","value":3.5,"reason":"moderate horizontal acceleration for smoother tracking"},
+  {"param":"MPC_ACC_UP_MAX","value":2.5,"reason":"avoid aggressive climbs in wind"},
+  {"param":"MPC_ACC_DOWN_MAX","value":1.8,"reason":"stable descents"},
+  {"param":"RTL_RETURN_ALT","value":230,"reason":"clear 200m building + margin"},
+  {"param":"GF_MAX_VER_DIST","value":230,"reason":"permit vertical envelope for mission"},
+  {"param":"MIS_TAKEOFF_ALT","value":10,"reason":"safe takeoff altitude before approach"}
+]
+args.related_parameters = ["RTL_DESCEND_ALT", "EKF2_AID_MASK", "COM_OBL_ACT", "LNDMC_ALT_MAX", "MPC_POS_MODE"]
+
+Follow-up like "apply/set these values" should switch to:
+{
+  "request_type": "tool_execution",
+  "intent": "batch_change_parameters",
+  "args": {"proposed_parameters": [{"param":"NAME","value":X}]}
+}
+
+### 4. AVAILABLE TOOLS (for TOOL_EXECUTION requests only):
 - **list_parameters**: Lists all drone parameters
   Args: None
   Use when: User wants to see all available parameters
@@ -296,7 +341,7 @@ new value in that context, execute if safe.
 Remember: You are the safety guardian between the user and potentially dangerous 
 drone operations. Be helpful, but prioritize safety and education."""
     
-    def process_query(self, user_query: str) -> LLMResponse:
+    def process_query(self, user_query: str, conversation_history: Optional[List[Dict]] = None) -> LLMResponse:
         """Processes a query with enhanced context and safety awareness."""
         if not user_query or not user_query.strip():
             return LLMResponse(
@@ -309,9 +354,23 @@ drone operations. Be helpful, but prioritize safety and education."""
             # Build context-aware message
             context_summary = self.context.get_context_summary()
             
-            messages = [
-                {"role": "system", "content": self._system_prompt},
-                {"role": "user", "content": f"""
+            # Use provided conversation history if available, otherwise use internal context
+            if conversation_history:
+                messages = [{"role": "system", "content": self._system_prompt}]
+                # Add conversation history
+                for msg in conversation_history[-6:]:  # Last 6 messages for context
+                    if msg.get("role") in ["user", "assistant"]:
+                        messages.append({
+                            "role": msg["role"],
+                            "content": msg["content"]
+                        })
+                # Add current query
+                messages.append({"role": "user", "content": user_query.strip()})
+            else:
+                # Fallback to internal context
+                messages = [
+                    {"role": "system", "content": self._system_prompt},
+                    {"role": "user", "content": f"""
 Current context from our conversation:
 {context_summary}
 
@@ -319,7 +378,7 @@ User's current request: {user_query.strip()}
 
 Please analyze this request considering the context above and provide a comprehensive response.
 """}
-            ]
+                ]
             
             response = self.client.chat.completions.create(
                 model=self.model,
@@ -556,10 +615,46 @@ class AgentExecutor:
             result = refresh_parameters(self.mav_handler)
         elif intent == "change_parameter":
             result = self._enhanced_change_parameter(**args)
+        elif intent == "batch_change_parameters":
+            # Expect args.proposed_parameters = [{"param":"NAME","value":X}, ...]
+            proposed = args.get('proposed_parameters') or []
+            if not isinstance(proposed, list) or not proposed:
+                return "❌ No parameters provided to change."
+            success_changes = []
+            failed_changes = []
+            for item in proposed:
+                try:
+                    p = item.get('param') or item.get('name')
+                    v = item.get('value') or item.get('target')
+                    if not p or v is None:
+                        failed_changes.append((p or 'UNKNOWN', 'missing parameter or value'))
+                        continue
+                    # Use enhanced change path for validation feedback
+                    change_result = self._enhanced_change_parameter(param_name=p, new_value_str=str(v))
+                    if change_result.startswith("✅") or "Verified change" in change_result:
+                        success_changes.append((p, v))
+                    else:
+                        failed_changes.append((p, change_result.split("\n")[0]))
+                except Exception as e:
+                    failed_changes.append((str(item), str(e)))
+            summary = ["🛠️ Batch Change Summary:"]
+            if success_changes:
+                summary.append("\n✅ Applied:")
+                for p, v in success_changes[:20]:
+                    summary.append(f"• {p} → {v}")
+            if failed_changes:
+                summary.append("\n❌ Failed:")
+                for p, err in failed_changes[:20]:
+                    summary.append(f"• {p}: {err}")
+            result = "\n".join(summary)
         else:
             result = f"❓ Unknown intent: {intent}"
         
         return f"\n🔧 **Execution Result**:\n{result}"
+
+    # Public helper to run a tool intent from outside this class
+    def run_tool_intent(self, llm_response: LLMResponse) -> str:
+        return self._handle_tool_execution(llm_response)
     
     def _enhanced_read_parameter(self, param_name: str) -> str:
         """Enhanced parameter reading with detailed information."""

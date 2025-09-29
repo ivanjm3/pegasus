@@ -39,13 +39,14 @@ class ChatBubbleWidget(QWidget):
     def create_user_bubble(self):
         """Create user message bubble"""
         bubble_frame = QFrame()
-        bubble_frame.setMaximumWidth(500)
+        bubble_frame.setMaximumWidth(700)
         bubble_frame.setStyleSheet("""
             QFrame {
-                background-color: #4a90e2;
-                border-radius: 18px;
-                padding: 12px 16px;
-                margin: 2px;
+                background-color: #343541;
+                border-radius: 12px;
+                padding: 16px 20px;
+                margin: 4px;
+                border: none;
             }
         """)
         
@@ -55,12 +56,12 @@ class ChatBubbleWidget(QWidget):
         # Message text
         message_label = QLabel(self.message)
         message_label.setWordWrap(True)
-        message_label.setStyleSheet("color: white; background: transparent;")
-        message_label.setFont(QFont("Arial", 11))
+        message_label.setStyleSheet("color: #ececf1; background: transparent; font-size: 15px; line-height: 1.6;")
+        message_label.setFont(QFont("Segoe UI", 10))
         
         # Timestamp
         timestamp_label = QLabel(datetime.now().strftime("%H:%M"))
-        timestamp_label.setStyleSheet("color: rgba(255,255,255,0.7); font-size: 10px; background: transparent;")
+        timestamp_label.setStyleSheet("color: #8e8ea0; font-size: 11px; background: transparent;")
         timestamp_label.setAlignment(Qt.AlignmentFlag.AlignRight)
         
         layout.addWidget(message_label)
@@ -71,32 +72,38 @@ class ChatBubbleWidget(QWidget):
     def create_bot_bubble(self):
         """Create bot message bubble"""
         bubble_frame = QFrame()
-        bubble_frame.setMaximumWidth(600)
+        bubble_frame.setMaximumWidth(700)
         
         # Style based on message type
         msg_type = self.metadata.get("type", "normal")
         if msg_type == "error":
-            bg_color = "#ff6b6b"
-            text_color = "white"
+            bg_color = "#f23838"
+            text_color = "#ececf1"
+            border_color = "#d32f2f"
         elif msg_type == "warning":
-            bg_color = "#feca57"
-            text_color = "#2f3542"
+            bg_color = "#f59e0b"
+            text_color = "#1a1b1f"
+            border_color = "#d97706"
         elif msg_type == "success":
-            bg_color = "#1dd1a1"
-            text_color = "white"
+            bg_color = "#10a37f"
+            text_color = "#ffffff"
+            border_color = "#0d8a6a"
         elif msg_type == "info":
-            bg_color = "#54a0ff"
-            text_color = "white"
+            bg_color = "#3b82f6"
+            text_color = "#ffffff"
+            border_color = "#2563eb"
         else:
-            bg_color = "#f1f2f6"
-            text_color = "#2f3542"
+            bg_color = "#444654"
+            text_color = "#ececf1"
+            border_color = "#565869"
         
         bubble_frame.setStyleSheet(f"""
             QFrame {{
                 background-color: {bg_color};
-                border-radius: 18px;
-                padding: 12px 16px;
-                margin: 2px;
+                border-radius: 12px;
+                padding: 16px 20px;
+                margin: 4px;
+                border: 1px solid {border_color};
             }}
         """)
         
@@ -105,19 +112,19 @@ class ChatBubbleWidget(QWidget):
         
         # Bot avatar/indicator
         header_layout = QHBoxLayout()
-        bot_indicator = QLabel("🤖")
-        bot_indicator.setStyleSheet(f"color: {text_color}; background: transparent; font-size: 12px;")
+        bot_indicator = QLabel("🤖 Assistant")
+        bot_indicator.setStyleSheet(f"color: {text_color}; background: transparent; font-size: 12px; font-weight: 600;")
         header_layout.addWidget(bot_indicator)
         header_layout.addStretch()
         
         # Message text
         message_label = QLabel(self.message)
         message_label.setWordWrap(True)
-        message_label.setStyleSheet(f"color: {text_color}; background: transparent;")
-        message_label.setFont(QFont("Arial", 11))
+        message_label.setStyleSheet(f"color: {text_color}; background: transparent; font-size: 15px; line-height: 1.6;")
+        message_label.setFont(QFont("Segoe UI", 10))
         
         # Add special formatting for parameter names
-        if "param_name" in self.metadata:
+        if "param_name" in self.metadata and self.metadata["param_name"]:
             param_name = self.metadata["param_name"]
             formatted_message = self.message.replace(param_name, f"<b>{param_name}</b>")
             message_label.setText(formatted_message)
@@ -128,10 +135,11 @@ class ChatBubbleWidget(QWidget):
         
         # Timestamp
         timestamp_label = QLabel(datetime.now().strftime("%H:%M"))
-        timestamp_label.setStyleSheet(f"color: rgba({text_color}, 0.6); font-size: 10px; background: transparent;")
+        timestamp_label.setStyleSheet(f"color: rgba(236, 236, 241, 0.6); font-size: 11px; background: transparent;")
         timestamp_label.setAlignment(Qt.AlignmentFlag.AlignLeft)
         
         layout.addLayout(header_layout)
+        layout.addSpacing(8)
         layout.addWidget(message_label)
         layout.addWidget(timestamp_label)
         
