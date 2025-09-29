@@ -244,21 +244,42 @@ class MainWindow(QMainWindow):
         """Create the right panel with logs and status info"""
         info_frame = QFrame()
         info_frame.setFrameStyle(QFrame.Shape.StyledPanel)
+        # Ensure text contrasts against white backgrounds in this panel
+        info_frame.setStyleSheet("QLabel { color: #111827; }")
         
         layout = QVBoxLayout(info_frame)
         
         # Panel title
         title_label = QLabel("System Information")
         title_label.setFont(QFont("Arial", 12, QFont.Weight.Bold))
+        title_label.setStyleSheet("color: white;")
         
         # Connection details
         self.connection_details = QLabel("Status: Disconnected\nCOM Port: Not selected\nBaud Rate: 57600")
-        self.connection_details.setStyleSheet("padding: 10px; background-color: #f0f0f0; border-radius: 5px;")
+        self.connection_details.setStyleSheet("padding: 10px; background-color: #f0f0f0; border-radius: 5px; color: #111827;")
         
         # Parameter search and list
         self.param_search = QLineEdit()
         self.param_search.setPlaceholderText("Search parameters (e.g., MPC, BAT_...)")
         self.param_search.textChanged.connect(self.filter_parameters)
+        # Override global dark input style for this white panel
+        self.param_search.setStyleSheet(
+            """
+            QLineEdit {
+                padding: 8px 10px;
+                border: 1px solid #e5e7eb;
+                border-radius: 6px;
+                font-size: 13px;
+                background-color: #ffffff;
+                color: #111827;
+            }
+            QLineEdit:focus {
+                border-color: #4f46e5;
+                background-color: #ffffff;
+                color: #111827;
+            }
+            """
+        )
 
         self.param_list = QListWidget()
         self.param_list.setMaximumHeight(250)
@@ -267,14 +288,15 @@ class MainWindow(QMainWindow):
             QListWidget {
                 background: #ffffff;
                 border: 1px solid #e0e0e0;
-                color: #1f2937;
+                color: #111827;
             }
             QListWidget::item {
                 padding: 4px 6px;
+                color: #111827;
             }
             QListWidget::item:selected {
                 background: #e3f2fd;
-                color: #0f172a;
+                color: #111827;
             }
             """
         )
@@ -284,16 +306,23 @@ class MainWindow(QMainWindow):
 
         # Log widget
         self.log_widget = LogWidget()
-        
+
+        # Labels with white text
+        param_label = QLabel("Parameters:")
+        param_label.setStyleSheet("color: white;")
+
+        activity_label = QLabel("Activity Log:")
+        activity_label.setStyleSheet("color: white;")
+
         layout.addWidget(title_label)
         layout.addWidget(self.connection_details)
-        layout.addWidget(QLabel("Parameters:"))
+        layout.addWidget(param_label)
         layout.addWidget(self.param_search)
         layout.addWidget(self.param_list)
         layout.addWidget(refresh_btn)
-        layout.addWidget(QLabel("Activity Log:"))
+        layout.addWidget(activity_label)
         layout.addWidget(self.log_widget)
-        
+
         return info_frame
     
     def setup_styling(self):
