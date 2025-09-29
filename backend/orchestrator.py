@@ -146,27 +146,23 @@ class BackendOrchestrator:
                 proposed = (llm_response.args or {}).get('proposed_parameters') or []
                 if isinstance(proposed, list) and proposed:
                     self._last_proposed_parameters = proposed
-                    # If the user asked to "suggest", persist JSON to file and return minimal UI text
+                    # Persist JSON to file if user asked to "suggest" but DO NOT suppress the chat output
                     if 'suggest' in user_l:
                         try:
                             import json, os
                             os.makedirs('logs', exist_ok=True)
                             with open('logs/last_suggestions.json', 'w', encoding='utf-8') as f:
                                 json.dump({'proposed_parameters': proposed}, f, indent=2)
-                            return ProcessingResult(
-                                success=True,
-                                response="Suggestions captured. You can now say 'set the values' to apply them.",
-                                intent='guidance',
-                                status=ProcessingStatus.SUCCESS,
-                                suggestions=llm_response.suggestions or [],
-                                confidence=llm_response.confidence
-                            ).to_dict()
                         except Exception:
-                            # If file write fails, still proceed normally
+                            # Non-fatal persistence error
                             pass
 
-            # Follow-up: user asks to "set/apply these" without re-sending the list
-            if any(kw in user_l for kw in ["apply these", "set these", "change these", "commit these", "set the values", "apply the values"]):
+            # Follow-up: user asks to "set/apply these" without re-sending the list (handle spelling variants)
+            if any(kw in user_l for kw in [
+                "apply these", "set these", "change these", "commit these",
+                "set the values", "apply the values", "set these parameters", "set these parametres",
+                "apply these parameters", "apply these parametres"
+            ]):
                 if getattr(drone_integration, 'is_connected', False):
                     if not self._last_proposed_parameters:
                         # Try to load from file if cache is empty
@@ -179,21 +175,35 @@ class BackendOrchestrator:
                         except Exception:
                             pass
                     if self._last_proposed_parameters:
-                        # Build a synthetic LLMResponse-like structure
-                        batch_args = { 'proposed_parameters': self._last_proposed_parameters }
-                        fake_response = LLMResponse(
-                            request_type=getattr(llm_response, 'request_type'),
-                            intent='batch_change_parameters',
-                            args=batch_args,
-                            explanation='Applying previously suggested parameters',
-                            confidence=0.9
-                        )
-                        # Delegate to tool execution through LLM handler
-                        if hasattr(self._llm_handler, 'run_tool_intent'):
-                            result_text = self._llm_handler.run_tool_intent(fake_response)  # type: ignore
-                        else:
-                            # Fallback to internal tool executor if helper not present
-                            result_text = self._llm_handler._handle_tool_execution(fake_response)  # type: ignore
+                        # Apply via drone integration directly (batch change)
+                        success_changes = []
+                        failed_changes = []
+                        for item in self._last_proposed_parameters:
+                            try:
+                                p = item.get('param') or item.get('name')
+                                v = item.get('value') or item.get('target')
+                                if not p or v is None:
+                                    failed_changes.append((p or 'UNKNOWN', 'missing parameter or value'))
+                                    continue
+                                op = drone_integration.execute_operation(
+                                    'change_parameter', param_name=p, new_value=v, force=True
+                                )
+                                if op.success:
+                                    success_changes.append((p, v))
+                                else:
+                                    failed_changes.append((p, op.message or 'failed'))
+                            except Exception as e:
+                                failed_changes.append((str(item), str(e)))
+                        summary = ["🛠️ Batch Change Summary:"]
+                        if success_changes:
+                            summary.append("\n✅ Applied:")
+                            for p, v in success_changes[:20]:
+                                summary.append(f"• {p} → {v}")
+                        if failed_changes:
+                            summary.append("\n❌ Failed:")
+                            for p, err in failed_changes[:20]:
+                                summary.append(f"• {p}: {err}")
+                        result_text = "\n".join(summary)
                         return ProcessingResult(
                             success=True,
                             response=result_text,

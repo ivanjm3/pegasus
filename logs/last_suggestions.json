@@ -2,18 +2,18 @@
   "proposed_parameters": [
     {
       "param": "MPC_XY_VEL_MAX",
-      "value": 8,
-      "reason": "Limit horizontal speed for stability in gusty wind conditions near the building"
+      "value": 6,
+      "reason": "Limit horizontal speed to maintain stability in gusty wind conditions during building scan"
     },
     {
       "param": "MPC_Z_VEL_MAX_UP",
       "value": 2,
-      "reason": "Control ascent speed to avoid sudden altitude changes near the structure"
+      "reason": "Controlled ascent speed to avoid sudden altitude changes near the building"
     },
     {
       "param": "MPC_Z_VEL_MAX_DN",
       "value": 1.5,
-      "reason": "Gentle descent to reduce oscillations and maintain stable altitude"
+      "reason": "Gentle descent speed to reduce oscillations and maintain smooth flight"
     },
     {
       "param": "MPC_ACC_HOR",
@@ -23,12 +23,12 @@
     {
       "param": "MPC_ACC_UP_MAX",
       "value": 2.5,
-      "reason": "Avoid aggressive climbs that could destabilize the drone in wind"
+      "reason": "Avoid aggressive climbs that could be destabilized by wind gusts"
     },
     {
       "param": "MPC_ACC_DOWN_MAX",
       "value": 1.8,
-      "reason": "Stable descents to maintain control near the building"
+      "reason": "Stable descent acceleration to maintain control near the building"
     },
     {
       "param": "RTL_RETURN_ALT",
@@ -38,12 +38,12 @@
     {
       "param": "GF_MAX_VER_DIST",
       "value": 230,
-      "reason": "Allow vertical envelope to accommodate the building height during mission"
+      "reason": "Allow vertical envelope to cover the building height plus margin"
     },
     {
       "param": "MIS_TAKEOFF_ALT",
       "value": 10,
-      "reason": "Safe takeoff altitude before approaching the tall structure"
+      "reason": "Safe takeoff altitude before approaching the building scan area"
     }
   ]
 }
