@@ -176,6 +176,12 @@ def change_parameter(handler: MAVLinkHandler, param_name: str, new_value_str: st
             verify = handler.get_parameter(param_name)
             if verify and abs(verify.value - new_value) < 0.001:
                 handler.get_all_parameters()[param_name] = verify  # Update cache
+                # Auto-set SYS_AUTOCONFIG=1 to persist configuration, unless we're already setting it
+                if param_name.upper() != 'SYS_AUTOCONFIG':
+                    try:
+                        _ = change_parameter(handler, 'SYS_AUTOCONFIG', '1', force=True)
+                    except Exception:
+                        pass
                 return f"✅ Verified change: {param_name} is now {verify.value}."
         return f"⚠️  Command sent, but could not verify the change for {param_name}."
     else:

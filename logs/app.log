@@ -2893,3 +2893,76 @@ AttributeError: 'LLMHandler' object has no attribute '_handle_tool_execution'
 2025-09-30 15:30:52,451 - backend.drone_integration - INFO - Successfully connected to drone
 2025-09-30 15:30:52,452 - drone.mavlink_handler - INFO - Requesting parameter list...
 2025-09-30 15:30:56,850 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:38:03,085 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 15:38:03,085 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 15:38:03,102 - __main__ - INFO - PyQt application initialized
+2025-09-30 15:38:03,103 - __main__ - WARNING - No OpenAI API key found. Running in mock mode.
+2025-09-30 15:38:03,295 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 15:38:03,304 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 15:38:03,305 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 15:38:03,305 - __main__ - INFO - Backend initialized in mock mode
+2025-09-30 15:38:03,507 - __main__ - INFO - Main window initialized
+2025-09-30 15:38:03,513 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:38:03,514 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:38:03,519 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:38:03,519 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:38:03,522 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:38:05,080 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 15:38:11,570 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:38:51,559 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOCONFIG = 0.0
+2025-09-30 15:38:52,560 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOCONFIG
+2025-09-30 15:39:05,478 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2025-09-30 15:39:05,480 - backend.llm_handler - ERROR - LLM processing error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: mock-api************ting. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-09-30 15:39:15,771 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2025-09-30 15:39:15,773 - backend.llm_handler - ERROR - LLM processing error: Error code: 401 - {'error': {'message': 'Incorrect API key provided: mock-api************ting. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
+2025-09-30 15:39:21,509 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 15:39:21,510 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 15:39:21,527 - __main__ - INFO - PyQt application initialized
+2025-09-30 15:39:21,717 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 15:39:21,727 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 15:39:21,727 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 15:39:21,728 - __main__ - INFO - Backend initialized successfully
+2025-09-30 15:39:21,935 - __main__ - INFO - Main window initialized
+2025-09-30 15:39:21,941 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:39:21,941 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:39:21,951 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:39:21,952 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:39:21,953 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:39:22,985 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 15:39:41,247 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:40:04,129 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:40:53,747 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:40:53,760 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOSTART = 4010.0
+2025-09-30 15:40:54,761 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOSTART
+2025-09-30 15:40:54,863 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOCONFIG = 1.0
+2025-09-30 15:40:55,864 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOCONFIG
+2025-09-30 15:40:55,966 - drone.mavlink_handler - INFO - Setting parameter RTL_RETURN_ALT = 120.0
+2025-09-30 15:40:56,967 - drone.mavlink_handler - INFO - Requesting parameter: RTL_RETURN_ALT
+2025-09-30 15:40:57,068 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOCONFIG = 1.0
+2025-09-30 15:40:58,069 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOCONFIG
+2025-09-30 15:40:58,172 - drone.mavlink_handler - INFO - Setting parameter RTL_DESCEND_ALT = 30.0
+2025-09-30 15:40:59,173 - drone.mavlink_handler - INFO - Requesting parameter: RTL_DESCEND_ALT
+2025-09-30 15:40:59,274 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOCONFIG = 1.0
+2025-09-30 15:41:00,275 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOCONFIG
+2025-09-30 15:41:00,378 - drone.mavlink_handler - INFO - Setting parameter MPC_XY_VEL_MAX = 7.0
+2025-09-30 15:41:01,379 - drone.mavlink_handler - INFO - Requesting parameter: MPC_XY_VEL_MAX
+2025-09-30 15:41:01,484 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOCONFIG = 1.0
+2025-09-30 15:41:02,485 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOCONFIG
+2025-09-30 15:41:02,589 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_UP = 3.0
+2025-09-30 15:41:03,590 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_UP
+2025-09-30 15:41:03,692 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOCONFIG = 1.0
+2025-09-30 15:41:04,693 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOCONFIG
+2025-09-30 15:41:04,798 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_DN = 2.0
+2025-09-30 15:41:05,799 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_DN
+2025-09-30 15:41:05,904 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOCONFIG = 1.0
+2025-09-30 15:41:06,905 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOCONFIG
+2025-09-30 15:41:07,008 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_HOR = 4.0
+2025-09-30 15:41:08,008 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_HOR
+2025-09-30 15:41:08,111 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOCONFIG = 1.0
+2025-09-30 15:41:09,111 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOCONFIG
+2025-09-30 15:41:09,213 - drone.mavlink_handler - INFO - Requesting parameter: LNDMC_ALT_MAX
+2025-09-30 15:41:11,250 - drone.mavlink_handler - INFO - Setting parameter MIS_TAKEOFF_ALT = 10.0
+2025-09-30 15:41:12,252 - drone.mavlink_handler - INFO - Requesting parameter: MIS_TAKEOFF_ALT
+2025-09-30 15:41:12,355 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOCONFIG = 1.0
+2025-09-30 15:41:13,356 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOCONFIG
+2025-09-30 15:41:21,370 - drone.mavlink_handler - INFO - Requesting parameter list...
