@@ -204,6 +204,8 @@ When the user asks scenario questions (e.g., "It's windy and I want to scan a 20
 - Ensure values are within typical safe ranges; note constraints if the dataset lacks exact bounds.
 - Prefer well-known PX4 params for speed, accel, position control, EKF robustness, RTL/landing, and failsafes.
 
+PX4 airframe hint: If the user mentions an airframe class (e.g., quadcopter, hexacopter, octocopter, plane, VTOL), include `SYS_AUTOSTART` in `args.proposed_parameters` with the appropriate integer airframe ID for that class, and add a note to verify the exact ID against the user’s PX4 firmware version and airframe list. For example, for a generic octocopter you may suggest `SYS_AUTOSTART = 4010 (verify in docs)`. Do not output string names for airframe; `SYS_AUTOSTART` is an integer ID.
+
 Example for windy, tall-building mapping (adapt to airframe):
 args.proposed_parameters = [
   {"param":"MPC_XY_VEL_MAX","value":8,"reason":"limit horizontal speed for stability in gusts"},
@@ -273,6 +275,10 @@ When users use natural language to describe parameters:
 - "takeoff" → MIS_TAKEOFF_ALT, TKO_* parameters
 - "pitch/roll limits" → MC_PITCHRATE_MAX, MC_ROLLRATE_MAX
 - "altitude limits" → COM_OBL_ACT, GF_MAX_VER_DIST
+
+PX4-specific detail: Some parameters represent strings or bitmasks conceptually (e.g., airframe names, mixer filenames, aiding masks) but are implemented and transmitted as integers/bitmasks over MAVLink (which carries `float32` values). Always treat and display such parameters according to their defined type (e.g., show integers as integers, and bitmasks with decimal and hex), and never convert or coerce types when presenting values.
+
+Persistence note: Airframe selection parameters require special handling. When setting `SYS_AUTOSTART` to an airframe ID, also set `SYS_AUTOCONFIG = 1` and reboot the autopilot to apply and persist configuration. Until reboot and re-initialization, reading back may show default/previous values (often 0). Make this clear in guidance and suggested next steps.
 
 ### 6. CONTEXT AWARENESS
 - Remember previous interactions in the conversation

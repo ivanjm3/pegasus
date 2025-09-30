@@ -2146,3 +2146,750 @@ AttributeError: 'LLMHandler' object has no attribute '_handle_tool_execution'
 2025-09-29 15:11:59,772 - drone.mavlink_handler - INFO - Requesting parameter list...
 2025-09-29 15:12:00,829 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
 2025-09-29 15:12:07,617 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 15:39:16,189 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-29 15:39:16,197 - __main__ - INFO - Configuration loaded successfully
+2025-09-29 15:39:16,217 - __main__ - INFO - PyQt application initialized
+2025-09-29 15:39:16,406 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-29 15:39:16,416 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-29 15:39:16,417 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-29 15:39:16,417 - __main__ - INFO - Backend initialized successfully
+2025-09-29 15:39:16,620 - __main__ - INFO - Main window initialized
+2025-09-29 15:39:16,627 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-29 15:39:16,627 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-29 15:39:16,633 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-29 15:39:16,633 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-29 15:39:16,635 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 15:39:20,142 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-29 15:39:51,746 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 15:40:06,549 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 15:40:27,825 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-29 15:40:27,833 - drone.mavlink_handler - INFO - Setting parameter MPC_XY_VEL_MAX = 6.0
+2025-09-29 15:40:28,834 - drone.mavlink_handler - INFO - Requesting parameter: MPC_XY_VEL_MAX
+2025-09-29 15:40:28,937 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_UP = 2.0
+2025-09-29 15:40:29,938 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_UP
+2025-09-29 15:40:30,044 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_DN = 1.5
+2025-09-29 15:40:31,046 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_DN
+2025-09-29 15:40:31,151 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_HOR = 3.5
+2025-09-29 15:40:32,153 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_HOR
+2025-09-29 15:40:32,255 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_UP_MAX = 2.5
+2025-09-29 15:40:33,256 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_UP_MAX
+2025-09-29 15:40:33,358 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_DOWN_MAX = 1.8
+2025-09-29 15:40:34,359 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_DOWN_MAX
+2025-09-29 15:40:34,466 - drone.mavlink_handler - INFO - Setting parameter RTL_RETURN_ALT = 120.0
+2025-09-29 15:40:35,468 - drone.mavlink_handler - INFO - Requesting parameter: RTL_RETURN_ALT
+2025-09-29 15:40:35,571 - drone.mavlink_handler - INFO - Setting parameter GF_MAX_VER_DIST = 120.0
+2025-09-29 15:40:36,573 - drone.mavlink_handler - INFO - Requesting parameter: GF_MAX_VER_DIST
+2025-09-29 15:40:36,676 - drone.mavlink_handler - INFO - Setting parameter MIS_TAKEOFF_ALT = 10.0
+2025-09-29 15:40:37,677 - drone.mavlink_handler - INFO - Requesting parameter: MIS_TAKEOFF_ALT
+2025-09-29 15:40:47,210 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 15:45:01,086 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-29 15:45:01,087 - __main__ - INFO - Configuration loaded successfully
+2025-09-29 15:45:01,106 - __main__ - INFO - PyQt application initialized
+2025-09-29 15:45:01,294 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-29 15:45:01,303 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-29 15:45:01,304 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-29 15:45:01,304 - __main__ - INFO - Backend initialized successfully
+2025-09-29 15:45:01,519 - __main__ - INFO - Main window initialized
+2025-09-29 15:45:01,525 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-29 15:45:01,525 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-29 15:45:01,532 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-29 15:45:01,532 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-29 15:45:01,534 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-29 15:45:03,899 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 13:53:27,783 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 13:53:27,785 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 13:53:27,803 - __main__ - INFO - PyQt application initialized
+2025-09-30 13:53:27,803 - __main__ - WARNING - No OpenAI API key found. Running in mock mode.
+2025-09-30 13:53:28,001 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 13:53:28,012 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 13:53:28,012 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 13:53:28,012 - __main__ - INFO - Backend initialized in mock mode
+2025-09-30 13:53:28,295 - __main__ - INFO - Main window initialized
+2025-09-30 13:53:28,301 - drone.mavlink_handler - INFO - Connecting to COM3 at 57600 baud...
+2025-09-30 13:53:28,301 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 13:53:36,863 - __main__ - INFO - Application interrupted by user
+2025-09-30 14:03:17,870 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:03:17,877 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:03:17,901 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:03:18,109 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:03:18,119 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:03:18,119 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:03:18,119 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:03:19,212 - __main__ - INFO - Main window initialized
+2025-09-30 14:03:19,224 - drone.mavlink_handler - INFO - Connecting to COM3 at 57600 baud...
+2025-09-30 14:03:19,224 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 14:03:29,451 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:03:29,484 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 14:03:39,644 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:03:39,674 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3:57600'
+2025-09-30 14:03:42,379 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:03:43,380 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-30 14:03:53,533 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:03:53,573 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-30 14:04:03,761 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:04:03,796 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3:57600'
+2025-09-30 14:04:06,503 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:04:07,504 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-30 14:04:17,663 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:04:17,693 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-30 14:04:27,851 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:04:27,883 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3:57600'
+2025-09-30 14:04:30,591 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:04:30,592 - drone.mavlink_handler - ERROR - Connection failed: All connection attempts failed
+2025-09-30 14:04:30,593 - __main__ - WARNING - Auto-connect failed: Failed to connect to drone
+2025-09-30 14:05:53,511 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 14:06:08,646 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:06:08,655 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:06:08,675 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:06:08,871 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:06:08,881 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:06:08,882 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:06:08,882 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:06:09,093 - __main__ - INFO - Main window initialized
+2025-09-30 14:06:09,098 - drone.mavlink_handler - INFO - Connecting to COM3 at 57600 baud...
+2025-09-30 14:06:09,098 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 14:06:19,263 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:06:19,303 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 14:06:29,463 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:06:29,499 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3:57600'
+2025-09-30 14:06:32,204 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:06:33,205 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-30 14:06:43,370 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:06:43,406 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-30 14:06:53,564 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:06:53,594 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3:57600'
+2025-09-30 14:06:56,296 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:06:57,298 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-30 14:07:07,458 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:07:07,491 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-30 14:07:17,648 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:07:17,687 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3:57600'
+2025-09-30 14:07:20,388 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:07:20,389 - drone.mavlink_handler - ERROR - Connection failed: All connection attempts failed
+2025-09-30 14:07:20,390 - __main__ - WARNING - Auto-connect failed: Failed to connect to drone
+2025-09-30 14:07:25,306 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 14:07:39,524 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:07:39,525 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:07:39,542 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:07:39,732 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:07:39,741 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:07:39,741 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:07:39,741 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:07:39,951 - __main__ - INFO - Main window initialized
+2025-09-30 14:07:39,956 - drone.mavlink_handler - INFO - Connecting to COM3 at 57600 baud...
+2025-09-30 14:07:39,956 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 14:07:50,116 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:07:50,158 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 14:08:00,317 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:08:00,346 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3:57600'
+2025-09-30 14:08:03,045 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:08:04,046 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-30 14:08:14,212 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:08:14,255 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-30 14:08:24,414 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:08:24,451 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3:57600'
+2025-09-30 14:08:27,155 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:08:28,157 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-30 14:08:38,323 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:08:38,358 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-30 14:08:48,516 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:08:48,545 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3:57600'
+2025-09-30 14:08:51,255 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:08:51,256 - drone.mavlink_handler - ERROR - Connection failed: All connection attempts failed
+2025-09-30 14:08:51,257 - __main__ - WARNING - Auto-connect failed: Failed to connect to drone
+2025-09-30 14:09:01,556 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 14:11:49,697 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 14:12:32,495 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 14:13:19,309 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 14:15:40,186 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 14:15:40,187 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:15:50,215 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:15:50,216 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:16:00,221 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:16:00,221 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8:57600'
+2025-09-30 14:16:02,909 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM8:57600'
+2025-09-30 14:16:03,910 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8'
+2025-09-30 14:16:13,916 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:16:13,916 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8'
+2025-09-30 14:16:23,921 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:16:23,922 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8:57600'
+2025-09-30 14:16:26,622 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM8:57600'
+2025-09-30 14:16:27,624 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM8'
+2025-09-30 14:16:37,262 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:16:37,262 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:16:37,280 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:16:37,467 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:16:37,477 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:16:37,478 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:16:37,478 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:16:37,680 - __main__ - INFO - Main window initialized
+2025-09-30 14:16:37,686 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 14:16:37,686 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:16:47,694 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:16:47,694 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:16:54,176 - __main__ - INFO - Application interrupted by user
+2025-09-30 14:17:11,401 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:17:11,403 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:17:11,419 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:17:11,606 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:17:11,615 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:17:11,616 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:17:11,616 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:17:11,826 - __main__ - INFO - Main window initialized
+2025-09-30 14:17:11,832 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 14:17:11,832 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:17:21,840 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:17:21,841 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:17:31,846 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:17:31,847 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8:57600'
+2025-09-30 14:17:34,556 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM8:57600'
+2025-09-30 14:17:35,558 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8'
+2025-09-30 14:17:45,569 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:17:45,570 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8'
+2025-09-30 14:17:55,575 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:17:55,576 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8:57600'
+2025-09-30 14:17:58,286 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM8:57600'
+2025-09-30 14:17:59,286 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM8'
+2025-09-30 14:18:09,293 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:18:09,293 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM8'
+2025-09-30 14:18:19,298 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:18:19,299 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM8:57600'
+2025-09-30 14:18:21,992 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'serial:COM8:57600'
+2025-09-30 14:18:21,992 - drone.mavlink_handler - INFO - Connecting to COM3 at 57600 baud...
+2025-09-30 14:18:21,992 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 14:18:32,151 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:18:32,190 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 14:18:34,127 - __main__ - INFO - Application interrupted by user
+2025-09-30 14:18:56,914 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:18:56,914 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:18:56,934 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:18:57,122 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:18:57,131 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:18:57,132 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:18:57,132 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:18:57,197 - __main__ - INFO - Main window initialized
+2025-09-30 14:18:57,203 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 14:18:57,203 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:19:07,210 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:19:07,211 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:19:17,217 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:19:17,218 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8:57600'
+2025-09-30 14:19:19,896 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM8:57600'
+2025-09-30 14:19:20,897 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8'
+2025-09-30 14:19:30,907 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:19:30,908 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8'
+2025-09-30 14:19:40,913 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:19:40,914 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8:57600'
+2025-09-30 14:19:43,615 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM8:57600'
+2025-09-30 14:19:44,616 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM8'
+2025-09-30 14:19:54,625 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:19:54,626 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM8'
+2025-09-30 14:20:04,631 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM8'
+2025-09-30 14:20:04,632 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM8:57600'
+2025-09-30 14:20:07,335 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'serial:COM8:57600'
+2025-09-30 14:20:07,336 - drone.mavlink_handler - INFO - Connecting to COM3 at 57600 baud...
+2025-09-30 14:20:07,336 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 14:20:17,490 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:20:17,518 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3'
+2025-09-30 14:20:27,677 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:20:27,718 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM3:57600'
+2025-09-30 14:20:30,411 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:20:31,411 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-30 14:20:41,577 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:20:41,619 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3'
+2025-09-30 14:20:51,777 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:20:51,809 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM3:57600'
+2025-09-30 14:20:54,503 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:20:55,504 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-30 14:21:05,667 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:21:05,706 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3'
+2025-09-30 14:21:15,864 - drone.mavlink_handler - WARNING - No heartbeat received for 'COM3'
+2025-09-30 14:21:15,897 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'COM3:57600'
+2025-09-30 14:21:18,580 - drone.mavlink_handler - INFO - Attempt 3: Trying connection string 'serial:COM3:57600'
+2025-09-30 14:21:18,580 - drone.mavlink_handler - ERROR - Connection failed: All connection attempts failed
+2025-09-30 14:21:18,581 - __main__ - WARNING - Auto-connect failed: Failed to connect to drone
+2025-09-30 14:23:43,551 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:23:43,552 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:23:43,569 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:23:43,759 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:23:43,770 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:23:43,771 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:23:43,771 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:23:43,973 - __main__ - INFO - Main window initialized
+2025-09-30 14:23:43,973 - __main__ - WARNING - Auto-connect failed: Drone module not available
+2025-09-30 14:23:51,345 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: False
+2025-09-30 14:23:55,627 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:23:55,628 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:23:55,646 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:23:55,832 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:23:55,842 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:23:55,842 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:23:55,843 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:23:56,051 - __main__ - INFO - Main window initialized
+2025-09-30 14:23:56,051 - __main__ - WARNING - Auto-connect failed: Drone module not available
+2025-09-30 14:23:58,790 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: False
+2025-09-30 14:24:11,029 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:24:11,030 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:24:11,046 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:24:11,233 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:24:11,242 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:24:11,242 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:24:11,243 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:24:11,451 - __main__ - INFO - Main window initialized
+2025-09-30 14:24:11,457 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 14:24:11,457 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:24:11,467 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 14:24:11,467 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 14:24:11,468 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 14:24:14,182 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 14:24:45,547 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 14:25:07,482 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:07,532 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:07,592 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:07,644 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:07,694 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:07,745 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:07,797 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:07,848 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:07,899 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:07,951 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,004 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,055 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,106 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,158 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,210 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,261 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,313 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,364 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,415 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,467 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,519 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,571 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,622 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,674 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,725 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,777 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,829 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,881 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,932 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:08,984 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,036 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,088 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,139 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,190 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,241 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,293 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,344 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,396 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,448 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,499 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,551 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,603 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,655 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,707 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,758 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,810 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,862 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,914 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:09,967 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,019 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,072 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,123 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,174 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,226 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,277 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,328 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,380 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,431 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,483 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,534 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,585 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,637 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:25:10,688 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 14:26:48,165 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:26:48,166 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:26:48,183 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:26:48,375 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:26:48,385 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:26:48,386 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:26:48,386 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:26:48,473 - __main__ - INFO - Main window initialized
+2025-09-30 14:26:48,479 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 14:26:48,479 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:26:48,487 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 14:26:48,487 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 14:26:48,487 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 14:26:50,501 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 14:27:33,768 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 14:27:48,796 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 14:28:47,835 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 14:29:39,871 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 14:53:07,979 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:53:07,980 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:53:07,999 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:53:08,192 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:53:08,202 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:53:08,203 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:53:08,203 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:53:08,322 - __main__ - INFO - Main window initialized
+2025-09-30 14:53:08,322 - __main__ - WARNING - Auto-connect failed: Drone module not available
+2025-09-30 14:53:09,547 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: False
+2025-09-30 14:53:19,472 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 14:53:19,473 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 14:53:19,491 - __main__ - INFO - PyQt application initialized
+2025-09-30 14:53:19,681 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 14:53:19,691 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 14:53:19,692 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 14:53:19,692 - __main__ - INFO - Backend initialized successfully
+2025-09-30 14:53:19,894 - __main__ - INFO - Main window initialized
+2025-09-30 14:53:19,901 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 14:53:19,901 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 14:53:19,907 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 14:53:19,907 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 14:53:19,908 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 14:53:21,532 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 14:53:57,792 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:01:50,289 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 15:01:50,290 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 15:01:50,311 - __main__ - INFO - PyQt application initialized
+2025-09-30 15:01:50,506 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 15:01:50,515 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 15:01:50,516 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 15:01:50,516 - __main__ - INFO - Backend initialized successfully
+2025-09-30 15:01:50,721 - __main__ - INFO - Main window initialized
+2025-09-30 15:01:50,727 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:01:50,728 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:01:50,728 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:01:50,728 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8:57600'
+2025-09-30 15:01:53,965 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM8:57600'
+2025-09-30 15:01:54,965 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8'
+2025-09-30 15:01:54,966 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8'
+2025-09-30 15:01:54,967 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8:57600'
+2025-09-30 15:01:57,259 - __main__ - INFO - Application interrupted by user
+2025-09-30 15:02:02,825 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 15:02:02,826 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 15:02:02,844 - __main__ - INFO - PyQt application initialized
+2025-09-30 15:02:03,030 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 15:02:03,041 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 15:02:03,042 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 15:02:03,042 - __main__ - INFO - Backend initialized successfully
+2025-09-30 15:02:03,246 - __main__ - INFO - Main window initialized
+2025-09-30 15:02:03,252 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:02:03,252 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:02:03,258 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:02:03,259 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:02:03,260 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:02:05,196 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 15:02:30,820 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:02:38,777 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:02:53,901 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:03:08,956 - backend.drone_integration - ERROR - Operation error: cannot convert float NaN to integer
+2025-09-30 15:03:09,141 - backend.drone_integration - ERROR - Operation error: cannot convert float NaN to integer
+2025-09-30 15:03:20,450 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:03:35,730 - backend.drone_integration - ERROR - Operation error: cannot convert float NaN to integer
+2025-09-30 15:03:57,420 - openai._base_client - INFO - Retrying request to /chat/completions in 0.389554 seconds
+2025-09-30 15:04:08,382 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:04:08,386 - backend.drone_integration - ERROR - Operation error: cannot convert float NaN to integer
+2025-09-30 15:07:41,616 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 15:07:41,617 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 15:07:41,635 - __main__ - INFO - PyQt application initialized
+2025-09-30 15:07:41,826 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 15:07:41,836 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 15:07:41,836 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 15:07:41,837 - __main__ - INFO - Backend initialized successfully
+2025-09-30 15:07:42,043 - __main__ - INFO - Main window initialized
+2025-09-30 15:07:42,050 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:07:42,050 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:07:42,057 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:07:42,057 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:07:42,058 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:07:43,354 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 15:08:03,799 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:08:06,209 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:08:54,482 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:08:54,486 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOSTART = 4010.0
+2025-09-30 15:08:55,490 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOSTART
+2025-09-30 15:08:57,528 - drone.mavlink_handler - INFO - Setting parameter RTL_RETURN_ALT = 120.0
+2025-09-30 15:08:58,529 - drone.mavlink_handler - INFO - Requesting parameter: RTL_RETURN_ALT
+2025-09-30 15:08:58,632 - drone.mavlink_handler - INFO - Setting parameter MPC_XY_VEL_MAX = 6.0
+2025-09-30 15:08:59,633 - drone.mavlink_handler - INFO - Requesting parameter: MPC_XY_VEL_MAX
+2025-09-30 15:08:59,737 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_UP = 3.0
+2025-09-30 15:09:00,738 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_UP
+2025-09-30 15:09:00,842 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_DN = 2.0
+2025-09-30 15:09:01,843 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_DN
+2025-09-30 15:09:01,946 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_HOR = 4.0
+2025-09-30 15:09:02,947 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_HOR
+2025-09-30 15:09:03,049 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_UP_MAX = 3.0
+2025-09-30 15:09:04,050 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_UP_MAX
+2025-09-30 15:09:04,157 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_DOWN_MAX = 2.0
+2025-09-30 15:09:05,158 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_DOWN_MAX
+2025-09-30 15:09:05,263 - drone.mavlink_handler - INFO - Requesting parameter: LNDMC_ALT_MAX
+2025-09-30 15:09:09,314 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:10:21,517 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:12:28,299 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 15:12:28,300 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 15:12:28,319 - __main__ - INFO - PyQt application initialized
+2025-09-30 15:12:28,508 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 15:12:28,518 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 15:12:28,519 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 15:12:28,519 - __main__ - INFO - Backend initialized successfully
+2025-09-30 15:12:28,729 - __main__ - INFO - Main window initialized
+2025-09-30 15:12:28,735 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:12:28,735 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:12:31,502 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:12:31,503 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8:57600'
+2025-09-30 15:12:34,246 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM8:57600'
+2025-09-30 15:12:35,247 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8'
+2025-09-30 15:12:35,939 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:12:35,939 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:12:35,940 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:12:50,145 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 15:12:50,145 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 15:12:50,165 - __main__ - INFO - PyQt application initialized
+2025-09-30 15:12:50,351 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 15:12:50,360 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 15:12:50,361 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 15:12:50,361 - __main__ - INFO - Backend initialized successfully
+2025-09-30 15:12:50,570 - __main__ - INFO - Main window initialized
+2025-09-30 15:12:50,576 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:12:50,576 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:12:50,583 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:12:50,583 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:12:50,584 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:12:52,077 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 15:12:54,082 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:15:24,002 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:15:59,589 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:15:59,614 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOSTART = 4010.0
+2025-09-30 15:16:00,616 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOSTART
+2025-09-30 15:16:02,687 - drone.mavlink_handler - INFO - Setting parameter RTL_RETURN_ALT = 120.0
+2025-09-30 15:16:03,691 - drone.mavlink_handler - INFO - Requesting parameter: RTL_RETURN_ALT
+2025-09-30 15:16:03,794 - drone.mavlink_handler - INFO - Setting parameter RTL_DESCEND_ALT = 30.0
+2025-09-30 15:16:04,796 - drone.mavlink_handler - INFO - Requesting parameter: RTL_DESCEND_ALT
+2025-09-30 15:16:04,906 - drone.mavlink_handler - INFO - Setting parameter MPC_XY_VEL_MAX = 8.0
+2025-09-30 15:16:05,907 - drone.mavlink_handler - INFO - Requesting parameter: MPC_XY_VEL_MAX
+2025-09-30 15:16:06,013 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_UP = 3.0
+2025-09-30 15:16:07,014 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_UP
+2025-09-30 15:16:07,121 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_DN = 2.0
+2025-09-30 15:16:08,122 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_DN
+2025-09-30 15:16:08,225 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_HOR = 4.0
+2025-09-30 15:16:09,227 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_HOR
+2025-09-30 15:16:09,334 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_UP_MAX = 3.0
+2025-09-30 15:16:10,339 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_UP_MAX
+2025-09-30 15:16:10,442 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_DOWN_MAX = 2.0
+2025-09-30 15:16:11,446 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_DOWN_MAX
+2025-09-30 15:16:11,553 - drone.mavlink_handler - INFO - Requesting parameter: LNDMC_ALT_MAX
+2025-09-30 15:17:29,570 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:21:02,494 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 15:21:02,495 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 15:21:02,513 - __main__ - INFO - PyQt application initialized
+2025-09-30 15:21:02,702 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 15:21:02,712 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 15:21:02,712 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 15:21:02,712 - __main__ - INFO - Backend initialized successfully
+2025-09-30 15:21:02,921 - __main__ - INFO - Main window initialized
+2025-09-30 15:21:02,927 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:21:02,928 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:21:02,934 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:21:02,934 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:21:02,935 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:21:03,896 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 15:21:32,253 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:21:57,331 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:21:57,344 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOSTART = 4010.0
+2025-09-30 15:21:58,345 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOSTART
+2025-09-30 15:21:58,448 - drone.mavlink_handler - INFO - Setting parameter RTL_RETURN_ALT = 120.0
+2025-09-30 15:21:59,449 - drone.mavlink_handler - INFO - Requesting parameter: RTL_RETURN_ALT
+2025-09-30 15:21:59,551 - drone.mavlink_handler - INFO - Setting parameter MPC_XY_VEL_MAX = 6.0
+2025-09-30 15:22:00,552 - drone.mavlink_handler - INFO - Requesting parameter: MPC_XY_VEL_MAX
+2025-09-30 15:22:00,655 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_UP = 3.0
+2025-09-30 15:22:01,656 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_UP
+2025-09-30 15:22:01,765 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_DN = 2.0
+2025-09-30 15:22:02,766 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_DN
+2025-09-30 15:22:02,870 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_HOR = 4.0
+2025-09-30 15:22:03,871 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_HOR
+2025-09-30 15:22:03,975 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_UP_MAX = 3.0
+2025-09-30 15:22:04,976 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_UP_MAX
+2025-09-30 15:22:05,079 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_DOWN_MAX = 2.0
+2025-09-30 15:22:06,080 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_DOWN_MAX
+2025-09-30 15:22:06,184 - drone.mavlink_handler - INFO - Requesting parameter: LNDMC_ALT_MAX
+2025-09-30 15:22:08,237 - drone.mavlink_handler - INFO - Setting parameter GF_MAX_VER_DIST = 130.0
+2025-09-30 15:22:09,239 - drone.mavlink_handler - INFO - Requesting parameter: GF_MAX_VER_DIST
+2025-09-30 15:22:10,849 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:22:55,026 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:23:11,686 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:23:11,694 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOSTART = 4006.0
+2025-09-30 15:23:12,695 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOSTART
+2025-09-30 15:23:12,798 - drone.mavlink_handler - INFO - Setting parameter RTL_RETURN_ALT = 120.0
+2025-09-30 15:23:13,799 - drone.mavlink_handler - INFO - Requesting parameter: RTL_RETURN_ALT
+2025-09-30 15:23:13,903 - drone.mavlink_handler - INFO - Setting parameter MPC_XY_VEL_MAX = 6.0
+2025-09-30 15:23:14,904 - drone.mavlink_handler - INFO - Requesting parameter: MPC_XY_VEL_MAX
+2025-09-30 15:23:15,008 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_UP = 3.0
+2025-09-30 15:23:16,009 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_UP
+2025-09-30 15:23:16,112 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_DN = 2.0
+2025-09-30 15:23:17,113 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_DN
+2025-09-30 15:23:17,215 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_HOR = 4.0
+2025-09-30 15:23:18,216 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_HOR
+2025-09-30 15:23:18,321 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_UP_MAX = 3.0
+2025-09-30 15:23:19,321 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_UP_MAX
+2025-09-30 15:23:19,425 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_DOWN_MAX = 2.0
+2025-09-30 15:23:20,427 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_DOWN_MAX
+2025-09-30 15:23:20,529 - drone.mavlink_handler - INFO - Requesting parameter: LNDMC_ALT_MAX
+2025-09-30 15:23:22,588 - drone.mavlink_handler - INFO - Setting parameter GF_MAX_VER_DIST = 130.0
+2025-09-30 15:23:23,590 - drone.mavlink_handler - INFO - Requesting parameter: GF_MAX_VER_DIST
+2025-09-30 15:23:24,682 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:24:34,236 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,286 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,337 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,388 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,439 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,490 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,541 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,593 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,644 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,696 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,747 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,798 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,849 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,900 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:34,951 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,003 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,054 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,105 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,156 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,207 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,257 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,308 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,359 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,410 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,461 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,512 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,563 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,615 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,666 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,717 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,768 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,819 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,870 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,922 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:35,973 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,025 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,076 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,127 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,178 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,230 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,281 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,332 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,383 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,434 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,486 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,538 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,590 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,641 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,693 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,744 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,795 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,847 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,898 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:36,950 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,001 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,052 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,103 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,153 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,204 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,255 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,306 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,357 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,409 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,460 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,511 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,563 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,614 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,666 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,717 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,768 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,819 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,871 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,922 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:37,973 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:38,024 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:38,075 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:38,126 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:38,178 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:38,229 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:38,281 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:38,333 - drone.mavlink_handler - ERROR - Error processing messages: ClearCommError failed (PermissionError(13, 'The device does not recognize the command.', None, 22))
+2025-09-30 15:24:38,378 - drone.mavlink_handler - INFO - Disconnected from PX4
+2025-09-30 15:24:38,383 - backend.drone_integration - INFO - Disconnected from drone
+2025-09-30 15:24:51,284 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:24:51,285 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:24:51,780 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:24:51,781 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8:57600'
+2025-09-30 15:24:54,462 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'serial:COM8:57600'
+2025-09-30 15:24:55,463 - drone.mavlink_handler - INFO - Attempt 2: Trying connection string 'COM8'
+2025-09-30 15:24:56,107 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:24:56,108 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:24:56,110 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:25:03,681 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:28:18,253 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 15:28:18,255 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 15:28:18,271 - __main__ - INFO - PyQt application initialized
+2025-09-30 15:28:18,462 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 15:28:18,472 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 15:28:18,472 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 15:28:18,472 - __main__ - INFO - Backend initialized successfully
+2025-09-30 15:28:18,685 - __main__ - INFO - Main window initialized
+2025-09-30 15:28:18,690 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:28:18,691 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:28:18,698 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:28:18,698 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:28:18,699 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:28:20,258 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 15:28:31,185 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:28:46,213 - __main__ - INFO - Starting PX4 Parameter Assistant...
+2025-09-30 15:28:46,214 - __main__ - INFO - Configuration loaded successfully
+2025-09-30 15:28:46,230 - __main__ - INFO - PyQt application initialized
+2025-09-30 15:28:46,418 - backend.llm_handler - INFO - Enhanced LLMHandler initialized with 1838 parameters.
+2025-09-30 15:28:46,428 - backend.validation - INFO - Loaded 1838 parameters
+2025-09-30 15:28:46,429 - backend.orchestrator - INFO - Backend orchestrator initialized successfully
+2025-09-30 15:28:46,429 - __main__ - INFO - Backend initialized successfully
+2025-09-30 15:28:46,633 - __main__ - INFO - Main window initialized
+2025-09-30 15:28:46,640 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:28:46,640 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:28:46,650 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:28:46,650 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:28:46,652 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:28:48,065 - __main__ - INFO - Application started successfully - Parameters: 1838, Drone available: True
+2025-09-30 15:29:12,231 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:29:30,147 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:29:30,150 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOSTART = 4010.0
+2025-09-30 15:29:31,151 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOSTART
+2025-09-30 15:29:31,253 - drone.mavlink_handler - INFO - Setting parameter RTL_RETURN_ALT = 120.0
+2025-09-30 15:29:32,255 - drone.mavlink_handler - INFO - Requesting parameter: RTL_RETURN_ALT
+2025-09-30 15:29:32,357 - drone.mavlink_handler - INFO - Setting parameter RTL_DESCEND_ALT = 30.0
+2025-09-30 15:29:33,358 - drone.mavlink_handler - INFO - Requesting parameter: RTL_DESCEND_ALT
+2025-09-30 15:29:33,462 - drone.mavlink_handler - INFO - Setting parameter MPC_XY_VEL_MAX = 8.0
+2025-09-30 15:29:34,463 - drone.mavlink_handler - INFO - Requesting parameter: MPC_XY_VEL_MAX
+2025-09-30 15:29:34,566 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_UP = 3.0
+2025-09-30 15:29:35,567 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_UP
+2025-09-30 15:29:35,670 - drone.mavlink_handler - INFO - Setting parameter MPC_Z_VEL_MAX_DN = 2.0
+2025-09-30 15:29:36,670 - drone.mavlink_handler - INFO - Requesting parameter: MPC_Z_VEL_MAX_DN
+2025-09-30 15:29:36,772 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_HOR = 4.0
+2025-09-30 15:29:37,773 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_HOR
+2025-09-30 15:29:37,875 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_UP_MAX = 3.0
+2025-09-30 15:29:38,876 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_UP_MAX
+2025-09-30 15:29:38,981 - drone.mavlink_handler - INFO - Setting parameter MPC_ACC_DOWN_MAX = 2.0
+2025-09-30 15:29:39,982 - drone.mavlink_handler - INFO - Requesting parameter: MPC_ACC_DOWN_MAX
+2025-09-30 15:29:40,085 - drone.mavlink_handler - INFO - Requesting parameter: LNDMC_ALT_MAX
+2025-09-30 15:30:02,766 - drone.mavlink_handler - INFO - Setting parameter SYS_AUTOCONFIG = 1.0
+2025-09-30 15:30:03,767 - drone.mavlink_handler - INFO - Requesting parameter: SYS_AUTOCONFIG
+2025-09-30 15:30:10,314 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:30:44,014 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2025-09-30 15:30:48,877 - drone.mavlink_handler - INFO - Disconnected from PX4
+2025-09-30 15:30:48,902 - backend.drone_integration - INFO - Disconnected from drone
+2025-09-30 15:30:52,445 - drone.mavlink_handler - INFO - Connecting to COM8 at 57600 baud...
+2025-09-30 15:30:52,445 - drone.mavlink_handler - INFO - Attempt 1: Trying connection string 'COM8'
+2025-09-30 15:30:52,451 - drone.mavlink_handler - INFO - Connected to COM8
+2025-09-30 15:30:52,451 - backend.drone_integration - INFO - Successfully connected to drone
+2025-09-30 15:30:52,452 - drone.mavlink_handler - INFO - Requesting parameter list...
+2025-09-30 15:30:56,850 - drone.mavlink_handler - INFO - Requesting parameter list...

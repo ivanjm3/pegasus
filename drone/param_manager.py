@@ -5,7 +5,70 @@ Much cleaner and uses your existing MAVLink infrastructure.
 
 import time
 import logging
-from .mavlink_handler import MAVLinkHandler, ConnectionConfig
+import math
+from .mavlink_handler import MAVLinkHandler, ConnectionConfig, ParameterInfo
+try:
+    # Used only for type-aware display formatting
+    from pymavlink.dialects.v20 import common as mavlink2
+except Exception:
+    mavlink2 = None  # Fallback: will display raw values
+
+
+def _format_value_for_display(param: ParameterInfo) -> str:
+    """Return a display string according to MAV_PARAM_TYPE without altering the value.
+
+    - Integer types are shown as integers
+    - Bitmask-like params (name ends with _MASK) are shown as decimal and hex
+    - Booleans (0/1) are shown with boolean hint
+    - Floats are shown with trimmed precision
+    - Unknown types fall back to the raw numeric
+    """
+    value = param.value
+    ptype = getattr(param, 'param_type', None)
+
+    def fmt_float(x: float) -> str:
+        # Trim unnecessary zeros while keeping reasonable precision
+        s = f"{x:.6f}"
+        s = s.rstrip('0').rstrip('.') if '.' in s else s
+        return s
+
+    # If pymavlink types are unavailable, best-effort formatting
+    if mavlink2 is None or ptype is None:
+        return fmt_float(value)
+
+    int_types = {
+        getattr(mavlink2, 'MAV_PARAM_TYPE_INT8', -1),
+        getattr(mavlink2, 'MAV_PARAM_TYPE_UINT8', -1),
+        getattr(mavlink2, 'MAV_PARAM_TYPE_INT16', -1),
+        getattr(mavlink2, 'MAV_PARAM_TYPE_UINT16', -1),
+        getattr(mavlink2, 'MAV_PARAM_TYPE_INT32', -1),
+        getattr(mavlink2, 'MAV_PARAM_TYPE_UINT32', -1),
+    }
+    real_types = {
+        getattr(mavlink2, 'MAV_PARAM_TYPE_REAL32', -1),
+    }
+
+    if ptype in int_types:
+        # Guard against NaN/Inf coming over the wire for int params
+        if not math.isfinite(value):
+            # Show as-is to avoid crashing, indicate non-finite
+            return str(value)
+        integer = int(value)
+        # Boolean hint for 0/1 values on 8-bit params
+        if ptype == getattr(mavlink2, 'MAV_PARAM_TYPE_UINT8', -2) and integer in (0, 1):
+            return f"{integer} ({'true' if integer == 1 else 'false'})"
+        # Bitmask hint when parameter name suggests a mask
+        if param.name.upper().endswith('_MASK'):
+            return f"{integer} (0x{integer:X})"
+        return str(integer)
+
+    if ptype in real_types:
+        if not math.isfinite(value):
+            return str(value)
+        return fmt_float(value)
+
+    # Fallback
+    return fmt_float(value)
 
 def list_parameters(handler: MAVLinkHandler) -> str:
     """Lists all parameters."""
@@ -15,7 +78,8 @@ def list_parameters(handler: MAVLinkHandler) -> str:
     
     output = [f"📋 All Parameters ({len(params)}):", "-" * 60]
     for name, param in sorted(params.items()):
-        output.append(f"  {name:<30} = {param.value}")
+        display = _format_value_for_display(param)
+        output.append(f"  {name:<30} = {display}")
     return "\n".join(output)
 
 def search_parameters(handler: MAVLinkHandler, search_term: str) -> str:
@@ -31,7 +95,8 @@ def search_parameters(handler: MAVLinkHandler, search_term: str) -> str:
     if matches:
         output = [f"📋 Found {len(matches)} matches for '{search_term}':"]
         for name, param in sorted(matches):
-            output.append(f"  {name:<30} = {param.value}")
+            display = _format_value_for_display(param)
+            output.append(f"  {name:<30} = {display}")
         return "\n".join(output)
     else:
         return f"❌ No matches for '{search_term}'"
@@ -43,7 +108,7 @@ def read_parameter(handler: MAVLinkHandler, param_name: str) -> str:
 
     cached = handler.get_parameter(param_name)
     if cached:
-        return f"✅ {param_name} = {cached.value} (cached)"
+        return f"✅ {param_name} = {_format_value_for_display(cached)} (cached)"
 
     if handler.request_parameter(param_name):
         for _ in range(20):  # Try for 2 seconds
@@ -52,7 +117,7 @@ def read_parameter(handler: MAVLinkHandler, param_name: str) -> str:
             result = handler.get_parameter(param_name)
             if result:
                 handler.get_all_parameters()[param_name] = result  # Update cache
-                return f"✅ {param_name} = {result.value} (from drone)"
+                return f"✅ {param_name} = {_format_value_for_display(result)} (from drone)"
         return f"❌ Could not read {param_name} from drone."
     else:
         return f"❌ Failed to send request for {param_name}."
@@ -88,7 +153,20 @@ def change_parameter(handler: MAVLinkHandler, param_name: str, new_value_str: st
         if confirm not in ['yes', 'y']:
             return "❌ Change cancelled by user."
 
-    if handler.set_parameter(param_name, new_value):
+    # Use the parameter's native MAVLink type when sending, fallback to default if missing
+    param_type = getattr(current, 'param_type', None)
+    try:
+        # Ensure we always pass a valid MAV_PARAM_TYPE integer
+        if isinstance(param_type, int):
+            send_type = param_type
+        else:
+            from pymavlink.dialects.v20 import common as _mav2
+            send_type = getattr(_mav2, 'MAV_PARAM_TYPE_REAL32')
+    except Exception:
+        # Fallback if pymavlink import fails
+        send_type = param_type if isinstance(param_type, int) else 9  # 9 == REAL32 in MAVLink v2
+
+    if handler.set_parameter(param_name, new_value, send_type):
         # Verification loop
         time.sleep(1)
         handler.request_parameter(param_name)

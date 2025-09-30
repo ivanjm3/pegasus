@@ -373,6 +373,26 @@ class MAVLinkHandler:
                 except Exception as e:
                     logger.error(f"Error in wildcard callback: {e}")
 
+    def reboot_autopilot(self) -> bool:
+        """Send a reboot command to the PX4 autopilot."""
+        if not self.is_connected():
+            logger.error("Not connected to PX4")
+            return False
+        try:
+            self.connection.mav.command_long_send(
+                self.connection.target_system,
+                self.connection.target_component,
+                mavlink2.MAV_CMD_PREFLIGHT_REBOOT_SHUTDOWN,
+                0,
+                1,  # param1: autopilot (1 = reboot autopilot)
+                0, 0, 0, 0, 0, 0
+            )
+            logger.info("Reboot command sent")
+            return True
+        except Exception as e:
+            logger.error(f"Failed to send reboot command: {e}")
+            return False
+
 
 if __name__ == "__main__":
     # Test the MAVLink handler
