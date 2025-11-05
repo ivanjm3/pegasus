@@ -1,654 +1,365 @@
-from typing import Dict, Any, Optional, Union, List, Tuple
-import re
-from dataclasses import dataclass, asdict
+import json
+from typing import Dict, Any, Optional, Union, Set, List
+from dataclasses import dataclass
+from enum import Enum
 from functools import lru_cache
 import logging
-from enum import Enum
-from .llm_handler import LLMHandler, LLMResponse
-from .validation import ParameterValidator, ValidationResult
-from .drone_integration import drone_integration, DroneOperationResult
+import re
+import os
 
 logger = logging.getLogger(__name__)
 
-class ProcessingStatus(Enum):
-    """Status codes for processing results"""
-    SUCCESS = "success"
-    VALIDATION_ERROR = "validation_error"
-    PARAMETER_NOT_FOUND = "parameter_not_found"
-    LLM_ERROR = "llm_error"
-    UNKNOWN_INTENT = "unknown_intent"
-    SYSTEM_ERROR = "system_error"
+class ParameterType(Enum):
+    """Enum for parameter types"""
+    FLOAT = "FLOAT"
+    INT32 = "INT32"
+    BOOL = "BOOL"
+    STRING = "STRING"
 
 @dataclass(frozen=True)
-class ProcessingResult:
-    """Immutable result structure for better type safety"""
-    success: bool
-    response: str
-    intent: str
-    status: ProcessingStatus
-    parameter_name: Optional[str] = None
-    parameter_value: Optional[Union[int, float, bool, str]] = None
-    parameter_info: Optional[Dict[str, Any]] = None
-    requires_confirmation: bool = False
-    confidence: float = 0.0
-    suggestions: Optional[List[str]] = None
+class ValidationResult:
+    """Immutable validation result"""
+    valid: bool
+    message: str
+    converted_value: Optional[Union[int, float, bool, str]] = None
+    suggested_value: Optional[Union[int, float]] = None
     
-    def to_dict(self) -> Dict[str, Any]:
-        """Convert to dictionary, excluding None values"""
-        result = asdict(self)
-        result['status'] = self.status.value
-        return {k: v for k, v in result.items() if v is not None}
-
-class BackendOrchestrator:
-    __slots__ = ['_llm_handler', '_validator', '_config', '_last_proposed_parameters']
+class ParameterValidator:
+    __slots__ = ['_param_dict', '_param_names', '_type_converters', '_bool_values']
     
-    def __init__(self, config: Dict[str, Any]):
-        """Initialize with dependency validation"""
-        self._validate_config(config)
-        self._config = config
+    def __init__(self, px4_params_path: str = 'data/px4_params.json'):
+        """Initialize with optimized data structures"""
+        self._param_dict = self._load_and_index_params(px4_params_path)
+        self._param_names = frozenset(self._param_dict.keys())
         
-        # Initialize components with error handling
+        # Pre-define type converters for efficiency
+        self._type_converters = {
+            ParameterType.FLOAT: self._convert_to_float,
+            ParameterType.INT32: self._convert_to_int,
+            ParameterType.BOOL: self._convert_to_bool,
+            ParameterType.STRING: self._convert_to_string
+        }
+        
+        # Boolean value mappings for flexible parsing
+        self._bool_values = {
+            # True values
+            frozenset({'true', '1', 'yes', 'on', 'enabled', 'enable'}): True,
+            # False values  
+            frozenset({'false', '0', 'no', 'off', 'disabled', 'disable'}): False
+        }
+    
+    def _load_and_index_params(self, params_path: str) -> Dict[str, Dict[str, Any]]:
+        """Load and create optimized parameter index - handle nested 'parameters' key"""
         try:
-            self._llm_handler = LLMHandler(
-                api_key=config['openai_api_key'],
-                model=config.get('llm_model', 'gpt-4'),
-                px4_params_path=config.get('px4_params_path', 'data/px4_params.json')
-            )
-            self._validator = ParameterValidator(
-                px4_params_path=config.get('px4_params_path', 'data/px4_params.json')
-            )
-            self._last_proposed_parameters = []
-            logger.info("Backend orchestrator initialized successfully")
-        except Exception as e:
-            logger.error(f"Failed to initialize backend components: {e}")
-            raise
+            # Handle relative paths
+            if not os.path.isabs(params_path):
+                params_path = os.path.join(os.path.dirname(__file__), '..', params_path)
+                params_path = os.path.abspath(params_path)
+            
+            with open(params_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            
+            # Handle both formats: list of params or {"parameters": [...]}
+            if isinstance(data, dict) and 'parameters' in data:
+                px4_params = data['parameters']
+            elif isinstance(data, list):
+                px4_params = data
+            else:
+                logger.error(f"Invalid PX4 parameters format in {params_path}")
+                return {}
+            
+            if not isinstance(px4_params, list):
+                raise ValueError("Expected list of parameters")
+            
+            # Create case-insensitive index with validation
+            param_dict = {}
+            for param in px4_params:
+                if not isinstance(param, dict) or 'name' not in param:
+                    logger.warning(f"Invalid parameter entry: {param}")
+                    continue
+                
+                name = param['name'].upper()
+                # Validate and normalize parameter info
+                param_dict[name] = self._normalize_param_info(param)
+            
+            logger.info(f"Loaded {len(param_dict)} parameters")
+            return param_dict
+            
+        except (FileNotFoundError, json.JSONDecodeError, PermissionError) as e:
+            logger.error(f"Failed to load parameters from {params_path}: {e}")
+            return {}
     
     @staticmethod
-    def _validate_config(config: Dict[str, Any]) -> None:
-        """Validate configuration parameters"""
-        required_keys = ['openai_api_key']
-        missing_keys = [key for key in required_keys if not config.get(key)]
+    def _normalize_param_info(param: Dict[str, Any]) -> Dict[str, Any]:
+        """Normalize and validate parameter information"""
+        normalized = {
+            'name': param['name'].upper(),
+            'type': param.get('type', 'FLOAT').upper(),
+            'description': param.get('shortDesc', param.get('description', '')).strip(),
+            'unit': param.get('units', param.get('unit', '')).strip(),
+            'default': param.get('default'),
+            'min': param.get('min'),
+            'max': param.get('max'),
+            'enum_values': param.get('enum_values', []),
+            'increment': param.get('increment'),
+            'decimal_places': param.get('decimal_places', 2),
+            'long_description': param.get('longDesc', ''),
+            'category': param.get('category', ''),
+            'group': param.get('group', '')
+        }
         
-        if missing_keys:
-            raise ValueError(f"Missing required config keys: {missing_keys}")
+        # Convert min/max to appropriate types
+        param_type = normalized['type']
+        if param_type in ('FLOAT', 'INT32'):
+            for key in ('min', 'max', 'default', 'increment'):
+                if normalized[key] is not None:
+                    try:
+                        normalized[key] = float(normalized[key]) if param_type == 'FLOAT' else int(normalized[key])
+                    except (ValueError, TypeError):
+                        logger.warning(f"Invalid {key} value for {normalized['name']}")
+                        normalized[key] = None
         
-        # Validate API key format (basic check)
-        api_key = config['openai_api_key']
-        if not isinstance(api_key, str) or len(api_key) < 20:
-            raise ValueError("Invalid OpenAI API key format")
+        return normalized
     
-    def _convert_conversation_history_to_hashable(self, conversation_history: Optional[List[Dict]]) -> Tuple:
-        """Convert conversation history to a hashable format for caching"""
-        if not conversation_history:
-            return ()
+    @lru_cache(maxsize=256)
+    def validate_parameter(self, param_name: str, value: Any) -> ValidationResult:
+        """Validate parameter with caching and comprehensive checks"""
+        if not param_name:
+            return ValidationResult(False, "Parameter name cannot be empty")
         
-        # Convert each message to a tuple for hashability
-        return tuple(
-            (msg.get('role', ''), msg.get('content', ''))
-            for msg in conversation_history
-        )
-    
-    @lru_cache(maxsize=128)  # Cache recent queries
-    def _process_user_message_cached(self, user_message: str, conversation_history_tuple: Tuple) -> Dict[str, Any]:
-        """Cached version that uses hashable conversation history"""
-        # Convert tuple back to list of dicts
-        conversation_history = [
-            {'role': role, 'content': content}
-            for role, content in conversation_history_tuple
-        ] if conversation_history_tuple else None
+        param_name_upper = param_name.upper()
         
-        return self._process_user_message_impl(user_message, conversation_history)
-    
-    def _process_user_message_impl(self, user_message: str, conversation_history: Optional[List[Dict]]) -> Dict[str, Any]:
-        """Actual implementation without caching"""
-        if not user_message or not user_message.strip():
-            return ProcessingResult(
-                success=False,
-                response="Please provide a message to process.",
-                intent="error",
-                status=ProcessingStatus.VALIDATION_ERROR
-            ).to_dict()
+        # Check if parameter exists
+        if param_name_upper not in self._param_dict:
+            suggestions = self.get_similar_parameters(param_name_upper)
+            suggestion_msg = f" Did you mean: {', '.join(suggestions[:3])}?" if suggestions else ""
+            return ValidationResult(
+                False, 
+                f"Parameter '{param_name}' not found in PX4 parameters.{suggestion_msg}"
+            )
         
-        user_message = user_message.strip()
+        param_info = self._param_dict[param_name_upper]
         
+        # Get parameter type
         try:
-            # Heuristic: direct parameter change commands (bypass LLM misclassification)
-            # Patterns: "set PARAM to VALUE", "change PARAM to VALUE", "set PARAM=VALUE"
-            change_match = re.match(r"\s*(set|change)\s+([A-Za-z0-9_]+)\s*(?:to|=)\s*([-+]?[0-9]*\.?[0-9]+)\s*$", user_message, flags=re.IGNORECASE)
-            if change_match:
-                _, raw_param, raw_value = change_match.groups()
-                param_name = raw_param.upper()
-                try:
-                    numeric_value = float(raw_value)
-                except ValueError:
-                    return ProcessingResult(
-                        success=False,
-                        response=f"❌ Invalid value '{raw_value}' for {param_name}.",
-                        intent='change',
-                        status=ProcessingStatus.VALIDATION_ERROR,
-                        parameter_name=param_name
-                    ).to_dict()
-
-                # Validate value
-                validation_result = self._validator.validate_parameter(param_name, numeric_value)
-                if not validation_result.valid:
-                    msg = f"Validation failed: {validation_result.message}"
-                    if validation_result.suggested_value is not None:
-                        msg += f"\nSuggested value: {validation_result.suggested_value}"
-                    return ProcessingResult(
-                        success=False,
-                        response=msg,
-                        intent='change',
-                        status=ProcessingStatus.VALIDATION_ERROR,
-                        parameter_name=param_name,
-                        parameter_value=raw_value
-                    ).to_dict()
-
-                # Apply immediately if connected
-                if getattr(drone_integration, 'is_connected', False):
-                    op = drone_integration.execute_operation(
-                        'change_parameter', param_name=param_name, new_value=validation_result.converted_value, force=True
-                    )
-                    if op.success:
-                        result_text = op.data.get('result') if op.data else f"✅ {param_name} updated to {validation_result.converted_value}."
-                        return ProcessingResult(
-                            success=True,
-                            response=result_text,
-                            intent='change',
-                            status=ProcessingStatus.SUCCESS,
-                            parameter_name=param_name,
-                            parameter_value=validation_result.converted_value
-                        ).to_dict()
-                    else:
-                        return ProcessingResult(
-                            success=False,
-                            response=f"❌ Failed to change parameter: {op.message}",
-                            intent='change',
-                            status=ProcessingStatus.SYSTEM_ERROR,
-                            parameter_name=param_name,
-                            parameter_value=validation_result.converted_value
-                        ).to_dict()
-                else:
-                    # Not connected: provide confirmation-style message to keep UX consistent
-                    param_info = self._validator.get_parameter_info(param_name)
-                    confirmation_message = self._build_change_confirmation_message(
-                        LLMResponse(request_type=None, intent='change', args={'param_name': param_name}, explanation=''),
-                        validation_result,
-                        param_info
-                    )
-                    return ProcessingResult(
-                        success=True,
-                        response=confirmation_message,
-                        intent='change',
-                        status=ProcessingStatus.SUCCESS,
-                        parameter_name=param_name,
-                        parameter_value=validation_result.converted_value,
-                        parameter_info=param_info,
-                        requires_confirmation=True
-                    ).to_dict()
-
-            # Process through LLM directly (no pre-classification needed)
-            llm_response = self._llm_handler.process_query(user_message, conversation_history)
-
-            # Heuristic: if user explicitly asks to list parameters, execute tool directly
-            user_l = user_message.lower()
-            if ("list" in user_l and "parameter" in user_l) or llm_response.intent == 'list_parameters':
-                if drone_integration.is_connected:
-                    op = drone_integration.execute_operation("list_parameters")
-                    if op.success:
-                        return ProcessingResult(
-                            success=True,
-                            response=op.data.get("result", ""),
-                            intent='list_parameters',
-                            status=ProcessingStatus.SUCCESS
-                        ).to_dict()
-                    else:
-                        return ProcessingResult(
-                            success=False,
-                            response=f"Failed to list parameters: {op.message}",
-                            intent='list_parameters',
-                            status=ProcessingStatus.SYSTEM_ERROR
-                        ).to_dict()
-                else:
-                    return ProcessingResult(
-                        success=False,
-                        response="⚠️ Cannot list parameters: Not connected to a drone. Please connect and try again.",
-                        intent='list_parameters',
-                        status=ProcessingStatus.SYSTEM_ERROR
-                    ).to_dict()
-            
-            # Cache proposed parameters from guidance responses for follow-up batch apply
-            if getattr(llm_response, 'request_type', None) and llm_response.request_type.value == 'guidance':
-                proposed = (llm_response.args or {}).get('proposed_parameters') or []
-                if isinstance(proposed, list) and proposed:
-                    self._last_proposed_parameters = proposed
-                    # Persist JSON to file if user asked to "suggest" but DO NOT suppress the chat output
-                    if 'suggest' in user_l:
-                        try:
-                            import json, os
-                            os.makedirs('logs', exist_ok=True)
-                            with open('logs/last_suggestions.json', 'w', encoding='utf-8') as f:
-                                json.dump({'proposed_parameters': proposed}, f, indent=2)
-                        except Exception:
-                            # Non-fatal persistence error
-                            pass
-
-            # Follow-up: user asks to "set/apply these" without re-sending the list (handle spelling variants)
-            if any(kw in user_l for kw in [
-                "apply these", "set these", "change these", "commit these",
-                "set the values", "apply the values", "set these parameters", "set these parametres",
-                "apply these parameters", "apply these parametres"
-            ]):
-                if getattr(drone_integration, 'is_connected', False):
-                    if not self._last_proposed_parameters:
-                        # Try to load from file if cache is empty
-                        try:
-                            import json
-                            with open('logs/last_suggestions.json', 'r', encoding='utf-8') as f:
-                                data = json.load(f)
-                                if isinstance(data, dict):
-                                    self._last_proposed_parameters = data.get('proposed_parameters') or []
-                        except Exception:
-                            pass
-                    if self._last_proposed_parameters:
-                        # Apply via drone integration directly (batch change)
-                        success_changes = []
-                        failed_changes = []
-                        for item in self._last_proposed_parameters:
-                            try:
-                                p = item.get('param') or item.get('name')
-                                v = item.get('value') or item.get('target')
-                                if not p or v is None:
-                                    failed_changes.append((p or 'UNKNOWN', 'missing parameter or value'))
-                                    continue
-                                op = drone_integration.execute_operation(
-                                    'change_parameter', param_name=p, new_value=v, force=True
-                                )
-                                if op.success:
-                                    success_changes.append((p, v))
-                                else:
-                                    failed_changes.append((p, op.message or 'failed'))
-                            except Exception as e:
-                                failed_changes.append((str(item), str(e)))
-                        summary = ["🛠️ Batch Change Summary:"]
-                        if success_changes:
-                            summary.append("\n✅ Applied:")
-                            for p, v in success_changes[:20]:
-                                summary.append(f"• {p} → {v}")
-                        if failed_changes:
-                            summary.append("\n❌ Failed:")
-                            for p, err in failed_changes[:20]:
-                                summary.append(f"• {p}: {err}")
-                        result_text = "\n".join(summary)
-                        return ProcessingResult(
-                            success=True,
-                            response=result_text,
-                            intent='batch_change_parameters',
-                            status=ProcessingStatus.SUCCESS
-                        ).to_dict()
-                    else:
-                        return ProcessingResult(
-                            success=False,
-                            response="No previous suggested parameters to apply. Ask for recommendations first.",
-                            intent='batch_change_parameters',
-                            status=ProcessingStatus.VALIDATION_ERROR
-                        ).to_dict()
-                else:
-                    return ProcessingResult(
-                        success=False,
-                        response="⚠️ Cannot apply parameters: Not connected to a drone.",
-                        intent='batch_change_parameters',
-                        status=ProcessingStatus.SYSTEM_ERROR
-                    ).to_dict()
-
-            # Handle LLM errors
-            if llm_response.intent == 'error':
-                return ProcessingResult(
-                    success=False,
-                    response=llm_response.explanation or "AI processing failed",
-                    intent='error',
-                    status=ProcessingStatus.LLM_ERROR
-                ).to_dict()
-            
-            # Route to appropriate handler based on LLM's intent classification
-            # Prefer request_type when available for richer semantics
-            req_type = getattr(llm_response, 'request_type', None)
-            if llm_response.intent == 'explain':
-                return self._handle_explanation(llm_response).to_dict()
-            elif llm_response.intent == 'change':
-                return self._handle_parameter_change(llm_response).to_dict()
-            elif (req_type and getattr(req_type, 'value', '') == 'guidance') or llm_response.intent == 'guide':
-                return self._handle_guidance(llm_response).to_dict()
-            else:
-                return self._handle_unknown_intent(llm_response).to_dict()
-                
-        except Exception as e:
-            logger.error(f"Error processing message '{user_message[:50]}...': {e}", exc_info=True)
-            return ProcessingResult(
-                success=False,
-                response="An unexpected error occurred while processing your request. Please try again.",
-                intent='error',
-                status=ProcessingStatus.SYSTEM_ERROR
-            ).to_dict()
-    
-    def process_user_message(self, user_message: str, conversation_history: Optional[List[Dict]] = None) -> Dict[str, Any]:
-        """Main method to process user messages with comprehensive error handling"""
-        # Convert conversation history to hashable format for caching
-        conversation_history_tuple = self._convert_conversation_history_to_hashable(conversation_history)
-        return self._process_user_message_cached(user_message, conversation_history_tuple)
-    
-    def _handle_explanation(self, llm_response: LLMResponse) -> ProcessingResult:
-        """Handle parameter explanation requests with enhanced information"""
-        param_name = (llm_response.args or {}).get('param_name')
-        if not param_name:
-            return ProcessingResult(
-                success=False,
-                response="I couldn't identify which parameter you want explained. Please be more specific.",
-                intent='explain',
-                status=ProcessingStatus.PARAMETER_NOT_FOUND,
-                suggestions=llm_response.suggestions or []
+            param_type = ParameterType(param_info['type'])
+        except ValueError:
+            param_type = ParameterType.FLOAT  # Default fallback
+        
+        # Type conversion and validation
+        try:
+            converted_value = self._type_converters[param_type](value)
+        except (ValueError, TypeError) as e:
+            return ValidationResult(
+                False,
+                f"Invalid value type for {param_name}. Expected {param_type.value}: {str(e)}"
             )
         
-        param_info = self._validator.get_parameter_info(param_name)
+        # Range validation for numeric types
+        if param_type in (ParameterType.FLOAT, ParameterType.INT32):
+            range_result = self._validate_numeric_range(param_info, converted_value, param_name)
+            if not range_result.valid:
+                return range_result
         
-        if not param_info:
-            # Check if LLM provided suggestions, otherwise generate them
-            suggestions = llm_response.suggestions or self._validator.get_similar_parameters(param_name)
-            error_msg = f"Parameter '{param_name}' not found."
-            if suggestions:
-                error_msg += f" Did you mean: {', '.join(suggestions[:3])}?"
-            
-            return ProcessingResult(
-                success=False,
-                response=error_msg,
-                intent='explain',
-                status=ProcessingStatus.PARAMETER_NOT_FOUND,
-                parameter_name=param_name,
-                suggestions=suggestions
-            )
-        
-        # Use the validator's parameter summary for consistent formatting
-        parameter_summary = self._validator.get_parameter_summary(param_name)
-        
-        # Combine LLM explanation with technical details
-        enhanced_explanation = self._build_explanation_response(
-            llm_response.explanation, 
-            parameter_summary, 
-            param_info
-        )
-        
-        return ProcessingResult(
-            success=True,
-            response=enhanced_explanation,
-            intent='explain',
-            status=ProcessingStatus.SUCCESS,
-            parameter_name=param_name,
-            parameter_info=param_info,
-            confidence=llm_response.confidence
-        )
-    
-    def _build_explanation_response(self, llm_explanation: str, parameter_summary: str, param_info: Dict[str, Any]) -> str:
-        """Build comprehensive explanation response"""
-        response_parts = []
-        
-        # Add LLM explanation if available
-        if llm_explanation and llm_explanation.strip():
-            response_parts.append(llm_explanation.strip())
-        
-        # Add technical details
-        if parameter_summary:
-            response_parts.append(f"\nTechnical Details:\n{parameter_summary}")
-        
-        # Add usage hints for certain parameter types
-        if param_info.get('enum_values'):
-            response_parts.append(f"\nAllowed values: {', '.join(map(str, param_info['enum_values']))}")
-        
-        if param_info.get('unit'):
-            response_parts.append(f"Unit: {param_info['unit']}")
-        
-        return "\n\n".join(response_parts)
-    
-    def _handle_parameter_change(self, llm_response: LLMResponse) -> ProcessingResult:
-        """Handle parameter change requests with comprehensive validation"""
-        args = llm_response.args or {}
-        param_name = args.get('param_name')
-        if not param_name:
-            return ProcessingResult(
-                success=False,
-                response="I couldn't identify which parameter you want to change. Please specify the parameter name.",
-                intent='change',
-                status=ProcessingStatus.VALIDATION_ERROR,
-                suggestions=llm_response.suggestions or []
-            )
-        
-        # Accept either numeric new_value or string new_value_str from the LLM
-        provided_value = args.get('new_value')
-        if provided_value is None:
-            provided_value = args.get('new_value_str')
-        if provided_value is None:
-            return ProcessingResult(
-                success=False,
-                response="I couldn't determine what value you want to set. Please specify a value.",
-                intent='change',
-                status=ProcessingStatus.VALIDATION_ERROR,
-                parameter_name=param_name
-            )
-        
-        # Validate the parameter value
-        validation_result = self._validator.validate_parameter(
-            param_name,
-            provided_value
-        )
-        
-        if not validation_result.valid:
-            error_response = f"Validation failed: {validation_result.message}"
-            
-            # Add suggestion if available
-            if validation_result.suggested_value is not None:
-                error_response += f"\nSuggested value: {validation_result.suggested_value}"
-            
-            return ProcessingResult(
-                success=False,
-                response=error_response,
-                intent='change',
-                status=ProcessingStatus.VALIDATION_ERROR,
-                parameter_name=param_name,
-                parameter_value=provided_value
-            )
-        
-        # If connected to a drone, apply immediately (skip UI confirmation)
-        if getattr(drone_integration, 'is_connected', False):
-            try:
-                op = drone_integration.execute_operation(
-                    'change_parameter',
-                    param_name=param_name,
-                    new_value=validation_result.converted_value,
-                    force=True
+        # Enum validation
+        if param_info['enum_values']:
+            if converted_value not in param_info['enum_values']:
+                return ValidationResult(
+                    False,
+                    f"Value {converted_value} not in allowed values {param_info['enum_values']} for {param_name}"
                 )
-                if op.success:
-                    result_text = op.data.get('result') if op.data else '✅ Parameter updated.'
-                    return ProcessingResult(
-                        success=True,
-                        response=result_text,
-                        intent='change',
-                        status=ProcessingStatus.SUCCESS,
-                        parameter_name=param_name,
-                        parameter_value=validation_result.converted_value,
-                        confidence=llm_response.confidence
-                    )
-                else:
-                    return ProcessingResult(
-                        success=False,
-                        response=f"❌ Failed to change parameter: {op.message}",
-                        intent='change',
-                        status=ProcessingStatus.SYSTEM_ERROR,
-                        parameter_name=param_name,
-                        parameter_value=validation_result.converted_value,
-                        confidence=llm_response.confidence
-                    )
-            except Exception as e:
-                return ProcessingResult(
-                    success=False,
-                    response=f"❌ Error applying change: {e}",
-                    intent='change',
-                    status=ProcessingStatus.SYSTEM_ERROR,
-                    parameter_name=param_name,
-                    parameter_value=validation_result.converted_value,
-                    confidence=llm_response.confidence
-                )
-
-        # Not connected: fall back to confirmation flow handled by UI
-        param_info = self._validator.get_parameter_info(param_name)
-        confirmation_message = self._build_change_confirmation_message(
-            llm_response, validation_result, param_info
-        )
-        return ProcessingResult(
-            success=True,
-            response=confirmation_message,
-            intent='change',
-            status=ProcessingStatus.SUCCESS,
-            parameter_name=param_name,
-            parameter_value=validation_result.converted_value,
-            parameter_info=param_info,
-            requires_confirmation=True,
-            confidence=llm_response.confidence
+        
+        # Increment validation for numeric types
+        if param_type in (ParameterType.FLOAT, ParameterType.INT32) and param_info.get('increment'):
+            increment_result = self._validate_increment(param_info, converted_value, param_name)
+            if not increment_result.valid:
+                return increment_result
+        
+        return ValidationResult(
+            True,
+            f"Valid value for {param_name}",
+            converted_value
         )
     
-    def _build_change_confirmation_message(self, llm_response: LLMResponse, 
-                                         validation_result: ValidationResult, 
-                                         param_info: Optional[Dict[str, Any]]) -> str:
-        """Build confirmation message for parameter changes"""
-        message_parts = []
+    def _validate_numeric_range(self, param_info: Dict[str, Any], value: Union[int, float], param_name: str) -> ValidationResult:
+        """Validate numeric value against min/max constraints"""
+        min_val = param_info.get('min')
+        max_val = param_info.get('max')
         
-        # Add LLM explanation if available
-        if llm_response.explanation and llm_response.explanation.strip():
-            message_parts.append(llm_response.explanation.strip())
+        if min_val is not None and value < min_val:
+            suggested = max(min_val, value)  # Suggest the minimum
+            return ValidationResult(
+                False,
+                f"Value {value} below minimum {min_val} for {param_name}",
+                suggested_value=suggested
+            )
         
-        # Add change summary
-        current_value = param_info.get('default', 'current') if param_info else 'current'
-        change_summary = (f"Ready to change {llm_response.parameter_name} "
-                         f"from {current_value} to {validation_result.converted_value}")
+        if max_val is not None and value > max_val:
+            suggested = min(max_val, value)  # Suggest the maximum
+            return ValidationResult(
+                False,
+                f"Value {value} above maximum {max_val} for {param_name}",
+                suggested_value=suggested
+            )
         
-        # Add unit if available
-        if param_info and param_info.get('unit'):
-            change_summary += f" {param_info['unit']}"
-        
-        message_parts.append(change_summary)
-        message_parts.append("Please confirm you want to apply this change to the drone.")
-        
-        return "\n\n".join(message_parts)
+        return ValidationResult(True, "Range validation passed", value)
     
-    def _handle_unknown_intent(self, llm_response: LLMResponse) -> ProcessingResult:
-        """Handle unknown intents with helpful suggestions"""
-        # Use LLM's suggestions if available, otherwise generate them
-        suggestions = llm_response.suggestions or []
-        param_name = (llm_response.args or {}).get('param_name')
+    def _validate_increment(self, param_info: Dict[str, Any], value: Union[int, float], param_name: str) -> ValidationResult:
+        """Validate value follows increment constraints"""
+        increment = param_info['increment']
+        default = param_info.get('default', 0)
         
-        if param_name and not suggestions:
-            suggestions = self._validator.get_similar_parameters(param_name)
+        # Check if value is a valid increment from default
+        diff = abs(value - default)
+        if increment > 0 and diff % increment != 0:
+            # Suggest nearest valid value
+            steps = round(diff / increment)
+            suggested = default + (steps * increment * (1 if value > default else -1))
+            return ValidationResult(
+                False,
+                f"Value {value} doesn't match increment {increment} for {param_name}",
+                suggested_value=suggested
+            )
         
-        response = llm_response.explanation or "I'm not sure how to help with that request."
-        response += "\n\nTry asking me to 'explain' a parameter or 'change' it to a specific value."
-        
-        if suggestions:
-            response += f"\n\nDid you mean one of these parameters: {', '.join(suggestions[:3])}?"
-        
-        return ProcessingResult(
-            success=False,
-            response=response,
-            intent='unknown',
-            status=ProcessingStatus.UNKNOWN_INTENT,
-            parameter_name=param_name,
-            suggestions=suggestions,
-            confidence=llm_response.confidence
-        )
-
-    def _handle_guidance(self, llm_response: LLMResponse) -> ProcessingResult:
-        """Provide scenario-based guidance with suggested parameters and rationale"""
-        args = llm_response.args or {}
-        proposed = args.get('proposed_parameters', [])  # list of {param, value, reason}
-        related = args.get('related_parameters', [])    # optional list of related params
-
-        parts = []
-        if llm_response.explanation:
-            parts.append(llm_response.explanation.strip())
-
-        if proposed:
-            parts.append("\nRecommended parameter set:")
-            for item in proposed[:10]:
-                p = item.get('param') or item.get('name') or 'UNKNOWN'
-                v = item.get('value') or item.get('target')
-                r = item.get('reason') or ''
-                parts.append(f"• {p} → {v}{' — ' + r if r else ''}")
-
-        if related:
-            parts.append("\nRelated parameters to review:")
-            parts.append(", ".join(map(str, related[:10])))
-
-        parts.append("\nNote: Validate these values against your airframe limits and test incrementally.")
-
-        response = "\n".join(parts)
-
-        return ProcessingResult(
-            success=True,
-            response=response,
-            intent='guidance',
-            status=ProcessingStatus.SUCCESS,
-            suggestions=llm_response.suggestions or [],
-            confidence=llm_response.confidence
-        )
+        return ValidationResult(True, "Increment validation passed", value)
     
-    # Utility methods for external use
-    def get_available_parameters(self) -> set:
-        """Get all available parameter names"""
-        return self._validator.available_parameters
+    def _convert_to_float(self, value: Any) -> float:
+        """Convert value to float with comprehensive parsing"""
+        if isinstance(value, (int, float)):
+            return float(value)
+        if isinstance(value, str):
+            # Handle scientific notation and special cases
+            value = value.strip().lower()
+            if value in ('inf', 'infinity'):
+                return float('inf')
+            if value in ('-inf', '-infinity'):
+                return float('-inf')
+            return float(value)
+        raise ValueError(f"Cannot convert {type(value).__name__} to float")
+    
+    def _convert_to_int(self, value: Any) -> int:
+        """Convert value to int with validation"""
+        if isinstance(value, int):
+            return value
+        if isinstance(value, float):
+            if value.is_integer():
+                return int(value)
+            raise ValueError("Float value is not an integer")
+        if isinstance(value, str):
+            value = value.strip()
+            # Handle hex, octal, binary
+            if value.startswith(('0x', '0X')):
+                return int(value, 16)
+            elif value.startswith(('0o', '0O')):
+                return int(value, 8)
+            elif value.startswith(('0b', '0B')):
+                return int(value, 2)
+            return int(float(value))  # Handle "1.0" -> 1
+        raise ValueError(f"Cannot convert {type(value).__name__} to int")
+    
+    def _convert_to_bool(self, value: Any) -> bool:
+        """Convert value to bool with flexible parsing"""
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, (int, float)):
+            return bool(value)
+        if isinstance(value, str):
+            value_lower = value.strip().lower()
+            for true_values, result in self._bool_values.items():
+                if value_lower in true_values:
+                    return result
+            raise ValueError(f"Cannot parse '{value}' as boolean")
+        raise ValueError(f"Cannot convert {type(value).__name__} to bool")
+    
+    @staticmethod
+    def _convert_to_string(value: Any) -> str:
+        """Convert value to string"""
+        return str(value)
+    
+    def get_similar_parameters(self, param_name: str, max_suggestions: int = 5) -> List[str]:
+        """Find similar parameter names using simple string matching"""
+        suggestions = []
+        param_name_lower = param_name.lower()
+        
+        # Exact substring matches first
+        for name in self._param_names:
+            if param_name_lower in name.lower():
+                suggestions.append(name)
+                if len(suggestions) >= max_suggestions:
+                    break
+        
+        # If not enough, try prefix matches
+        if len(suggestions) < max_suggestions:
+            for name in self._param_names:
+                if name.lower().startswith(param_name_lower) and name not in suggestions:
+                    suggestions.append(name)
+                    if len(suggestions) >= max_suggestions:
+                        break
+        
+        return suggestions
     
     def get_parameter_info(self, param_name: str) -> Optional[Dict[str, Any]]:
         """Get detailed parameter information"""
-        return self._validator.get_parameter_info(param_name)
+        if not param_name:
+            return None
+        return self._param_dict.get(param_name.upper())
     
-    def validate_parameter_value(self, param_name: str, value: Any) -> ValidationResult:
-        """Validate a parameter value"""
-        return self._validator.validate_parameter(param_name, value)
+    def get_parameter_summary(self, param_name: str) -> Optional[str]:
+        """Get human-readable parameter summary"""
+        param_info = self.get_parameter_info(param_name)
+        if not param_info:
+            return None
+        
+        summary_parts = [f"Parameter: {param_info['name']}"]
+        
+        if param_info['description']:
+            summary_parts.append(f"Description: {param_info['description']}")
+        
+        summary_parts.append(f"Type: {param_info['type']}")
+        
+        if param_info.get('min') is not None or param_info.get('max') is not None:
+            min_val = param_info.get('min', 'N/A')
+            max_val = param_info.get('max', 'N/A')
+            summary_parts.append(f"Range: {min_val} to {max_val}")
+        
+        if param_info.get('unit'):
+            summary_parts.append(f"Unit: {param_info['unit']}")
+        
+        if param_info.get('default') is not None:
+            summary_parts.append(f"Default: {param_info['default']}")
+        
+        if param_info.get('enum_values'):
+            summary_parts.append(f"Allowed values: {', '.join(map(str, param_info['enum_values']))}")
+        
+        return " | ".join(summary_parts)
     
-    def get_system_status(self) -> Dict[str, Any]:
-        """Get system status information"""
-        return {
-            'parameter_count': self._validator.parameter_count,
-            'llm_model': self._config.get('llm_model', 'gpt-4'),
-            'components_initialized': True,
-            'drone_connection': drone_integration.get_connection_status(),
-            'drone_parameters': drone_integration.get_parameters_snapshot() if getattr(drone_integration, 'get_parameters_snapshot', None) else {},
-            'cache_info': {
-                'process_user_message': self._process_user_message_cached.cache_info()._asdict()
-            }
-        }
-
-    # Drone connection helpers exposed to UI
-    def connect_to_drone(self, port: Optional[str] = None, baudrate: int = 57600) -> DroneOperationResult:
-        return drone_integration.connect(port, baudrate)
+    def validate_multiple_parameters(self, param_values: Dict[str, Any]) -> Dict[str, ValidationResult]:
+        """Validate multiple parameters efficiently"""
+        results = {}
+        for param_name, value in param_values.items():
+            results[param_name] = self.validate_parameter(param_name, value)
+        return results
     
-    def disconnect_from_drone(self) -> DroneOperationResult:
-        return drone_integration.disconnect()
+    @property
+    def parameter_count(self) -> int:
+        """Get total number of parameters"""
+        return len(self._param_names)
     
-    def execute_drone_operation(self, operation: str, **kwargs) -> DroneOperationResult:
-        return drone_integration.execute_operation(operation, **kwargs)
+    def is_valid_parameter(self, parameter_name: str) -> bool:
+        """Check if a parameter exists in the parameter database."""
+        return parameter_name.upper() in self._param_names
     
-    def is_drone_connected(self) -> bool:
-        return drone_integration.is_connected
+    @property
+    def available_parameters(self) -> Set[str]:
+        """Get set of all available parameter names"""
+        return self._param_names
     
-    def connect_to_drone(self, port: Optional[str] = None, baudrate: int = 57600) -> DroneOperationResult:
-        """Connect to drone"""
-        return drone_integration.connect(port, baudrate)
-    
-    def disconnect_from_drone(self) -> DroneOperationResult:
-        """Disconnect from drone"""
-        return drone_integration.disconnect()
-    
-    def execute_drone_operation(self, operation: str, **kwargs) -> DroneOperationResult:
-        """Execute a drone operation"""
-        return drone_integration.execute_operation(operation, **kwargs)
-    
-    def is_drone_connected(self) -> bool:
-        """Check if drone is connected"""
-        return drone_integration.is_connected
+    def get_parameters_by_type(self, param_type: Union[str, ParameterType]) -> List[str]:
+        """Get all parameters of a specific type"""
+        if isinstance(param_type, str):
+            param_type = param_type.upper()
+        else:
+            param_type = param_type.value
+        
+        return [name for name, info in self._param_dict.items() 
+                if info['type'] == param_type]
